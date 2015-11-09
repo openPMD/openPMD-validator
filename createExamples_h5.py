@@ -516,13 +516,13 @@ def write_particles(f, iteration):
 
     # domain decomposition shall be 1D along x (but positions are still 3D)
     # we can therefor make the other components constant
-    particlePatches["offset/y"].attrs["value"] = np.float32(0.0)
-    particlePatches["offset/z"].attrs["value"] = np.float32(0.0)
+    particlePatches["offset/y"].attrs["value"] = np.float32(0.0)   # full size
+    particlePatches["offset/z"].attrs["value"] = np.float32(0.0)   # full size
     particlePatches["offset/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
     particlePatches["offset/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
 
-    particlePatches["extend/y"].attrs["value"] = np.float32(0.0)
-    particlePatches["extend/z"].attrs["value"] = np.float32(0.0)
+    particlePatches["extend/y"].attrs["value"] = np.float32(128.0) # full size
+    particlePatches["extend/z"].attrs["value"] = np.float32(1.0)   # full size
     particlePatches["extend/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
     particlePatches["extend/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
 
