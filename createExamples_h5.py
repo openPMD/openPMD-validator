@@ -491,35 +491,53 @@ def write_particles(f, iteration):
        #          L    M     T    I  theta  N    J
        # Dimension of Length * Mass / Time
 
-    # Record `particlePatches`
+    # Sub-Group `particlePatches`
     #   recommended
     mpi_size = 4  # "emulate" example MPI run with 4 ranks
-    data_size = 2 + 2 * len(position.keys())
     # 2 + 2 * Dimensionality of position record
     grid_layout = np.array( [512, 128, 1] ) # global grid in cells
-    electrons.create_dataset("particlePatches",
-                             (data_size*mpi_size,), dtype=np.float64)
+    electrons.create_group("particlePatches")
     particlePatches = electrons["particlePatches"]
+
+    particlePatches.create_dataset("numParticles", (mpi_size,), dtype=np.uint64)
+    particlePatches.create_dataset("numParticlesOffset", (mpi_size,), dtype=np.uint64)
+    particlePatches.create_dataset("offset/x", (mpi_size,), dtype=np.float32)
+    particlePatches.create_group("offset/y")
+    particlePatches.create_group("offset/z")
+    particlePatches["offset/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
+    particlePatches["offset/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
+    particlePatches["offset/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
+    particlePatches.create_dataset("extent/x", (mpi_size,), dtype=np.float32)
+    particlePatches.create_group("extent/y")
+    particlePatches.create_group("extent/z")
+    particlePatches["extent/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
+    particlePatches["extent/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
+    particlePatches["extent/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
+
+    # domain decomposition shall be 1D along x (but positions are still 3D)
+    # we can therefor make the other components constant
+    particlePatches["offset/y"].attrs["value"] = np.float32(0.0)   # full size
+    particlePatches["offset/z"].attrs["value"] = np.float32(0.0)   # full size
+    particlePatches["offset/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
+    particlePatches["offset/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
+
+    particlePatches["extent/y"].attrs["value"] = np.float32(128.0) # full size
+    particlePatches["extent/z"].attrs["value"] = np.float32(1.0)   # full size
+    particlePatches["extent/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
+    particlePatches["extent/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
 
     for rank in np.arange(mpi_size):
         # each MPI rank would write its part independently
         # numParticles: number of particles in this patch
-        particlePatches[rank*data_size + 0] = globalNumParticles / mpi_size
+        particlePatches['numParticles'][rank] = globalNumParticles / mpi_size
         # numParticlesOffset: offset within the one-dimensional records where
         #                     the first particle in this patch is stored
-        particlePatches[rank*data_size + 1] = rank*globalNumParticles / mpi_size
-        # offset and extend in the grid
+        particlePatches['numParticlesOffset'][rank] = rank*globalNumParticles / mpi_size
+        # offset and extent in the grid
         # example: 1D domain decompositon of 3D simulation along the first axis
         # 1st dimension spatial offset
-        particlePatches[rank*data_size + 2] = rank * grid_layout[0] / mpi_size
-        # 2nd dimension spatial offset 
-        particlePatches[rank*data_size + 3] = 0
-        # 3rd dimension spatial offset
-        particlePatches[rank*data_size + 4] = 0
-        # 1st dimension spatial extend
-        particlePatches[rank*data_size + 5] = grid_layout[0] / mpi_size 
-        particlePatches[rank*data_size + 6] = 0 # 2nd dimension spatial extend
-        particlePatches[rank*data_size + 7] = 0 # 3rd dimension spatial extend
+        particlePatches['offset/x'][rank] = rank * grid_layout[0] / mpi_size
+        particlePatches['extent/x'][rank] = grid_layout[0] / mpi_size
 
 
 

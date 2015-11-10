@@ -701,12 +701,31 @@ def check_particles(f, iteration, v, pic) :
                 result_array += np.array([ 1, 0])
 
         # Check the particlePatches record of the particles
-        result_array += test_key(species, v, "recommended", "particlePatches")
-        if "particlesPatches" in species.keys() :
-            if len(species["particlePatches"].shape) != 1:
-                print("Error: `particlePatches` in (%s) is not an 1D array!" \
-                      %(species.name) )
-                result_array += np.array([ 1, 0])
+        patch_test = test_key(species, v, "recommended", "particlePatches")
+        result_array += patch_test
+        if result_array[0] == 0 and patch_test[1] == 0 :
+            result_array += test_key(species["particlePatches"], v, "required",
+                                     "numParticles")
+            result_array += test_key(species["particlePatches"], v, "required",
+                                     "numParticlesOffset")
+            result_array += test_key(species["particlePatches"], v, "required",
+                                     "offset")
+            result_array += test_key(species["particlePatches"], v, "required",
+                                     "extent")
+            if result_array[0] == 0 :
+                offset = species["particlePatches"]["offset"]
+                extent = species["particlePatches"]["extent"]
+                # Attributes of the components
+                for component_name in species["position"].keys() :
+                    result_array += test_key( offset, v, "required",
+                                              component_name)
+                    result_array += test_key( extent, v, "required",
+                                              component_name)
+                    if result_array[0] == 0 :
+                        dset_offset = offset[component_name]
+                        result_array += test_component(dset_offset, v)
+                        dset_extent = extent[component_name]
+                        result_array += test_component(dset_extent, v)
 
         # Check the records required by the PIC extension
         if pic :
