@@ -671,7 +671,10 @@ def check_particles(f, iteration, v, pic) :
     else:
         full_particle_path = base_path + particles_path
         # Find all the particle species
-        list_species = f[full_particle_path].keys()
+        try:
+            list_species = f[full_particle_path].keys()
+        except KeyError:
+            list_species = []
     print( "Iteration %s : found %d particle species"
         %( iteration, len(list_species) ) )
 
