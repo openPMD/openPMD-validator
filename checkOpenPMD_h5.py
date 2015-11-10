@@ -525,7 +525,10 @@ def check_meshes(f, iteration, v, pic):
     else:
         full_meshes_path = base_path + meshes_path
         # Find all the meshes
-        list_meshes = f[full_meshes_path].keys()
+        try:
+            list_meshes = f[full_meshes_path].keys()
+        except KeyError:
+            list_meshes = []
     print( "Iteration %s : found %d meshes"
         %( iteration, len(list_meshes) ) )
 
@@ -582,7 +585,7 @@ def check_meshes(f, iteration, v, pic):
         # Check the attributes associated with the field solver
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "fieldSolver", np.string_)
-        valid, field_solver = get_attr(field, "fieldSolver")
+        valid, field_solver = get_attr(f[full_meshes_path], "fieldSolver")
         if (valid == True) and (field_solver in ["other", "GPSTD"]) :
             result_array += test_attr(f[full_meshes_path], v, "required",
                                       "fieldSolverParameters", np.string_)
@@ -590,23 +593,23 @@ def check_meshes(f, iteration, v, pic):
         # Check for the attributes associated with the field boundaries
         result_array += test_attr(f[full_meshes_path], v, "required",
                                 "fieldBoundary", np.ndarray, np.string_)
-        valid, field_boundary = get_attr(field, "fieldBoundary")
-        if (valid == True) and (field_boundary == "other") :
+        valid, field_boundary = get_attr(f[full_meshes_path], "fieldBoundary")
+        if (valid == True) and (np.any(field_boundary == "other")) :
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "fieldBoundaryParameters", np.ndarray, np.string_)
 
         # Check for the attributes associated with the field boundaries
         result_array += test_attr(f[full_meshes_path], v, "required",
                                 "particleBoundary", np.ndarray, np.string_)
-        valid, field_boundary = get_attr(field, "particledBoundary")
-        if (valid == True) and (field_boundary == "other") :
+        valid, particle_boundary = get_attr(f[full_meshes_path], "particleBoundary")
+        if (valid == True) and (np.any(particle_boundary == "other")) :
             result_array += test_attr(f[full_meshes_path], v, "required",
                     "particleBoundaryParameters", np.ndarray, np.string_)
 
         # Check the attributes associated with the current smoothing
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "currentSmoothing", np.string_)
-        valid, current_smoothing = get_attr(field, "currentSmoothing")
+        valid, current_smoothing = get_attr(f[full_meshes_path], "currentSmoothing")
         if (valid == True) and (current_smoothing != "none") :
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "currentSmoothingParameters", np.string_)
@@ -614,7 +617,7 @@ def check_meshes(f, iteration, v, pic):
         # Check the attributes associated with the charge conservation
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "chargeCorrection", np.string_)
-        valid, charge_correction = get_attr(field, "chargeCorrection")
+        valid, charge_correction = get_attr(f[full_meshes_path], "chargeCorrection")
         if valid == True and charge_correction != "none":
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "chargeCorrectionParameters", np.string_)
@@ -671,7 +674,10 @@ def check_particles(f, iteration, v, pic) :
     else:
         full_particle_path = base_path + particles_path
         # Find all the particle species
-        list_species = f[full_particle_path].keys()
+        try:
+            list_species = f[full_particle_path].keys()
+        except KeyError:
+            list_species = []
     print( "Iteration %s : found %d particle species"
         %( iteration, len(list_species) ) )
 
