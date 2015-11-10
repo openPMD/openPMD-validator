@@ -507,12 +507,12 @@ def write_particles(f, iteration):
     particlePatches["offset/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
     particlePatches["offset/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
     particlePatches["offset/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
-    particlePatches.create_dataset("extend/x", (mpi_size,), dtype=np.float32)
-    particlePatches.create_group("extend/y")
-    particlePatches.create_group("extend/z")
-    particlePatches["extend/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
-    particlePatches["extend/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
-    particlePatches["extend/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
+    particlePatches.create_dataset("extent/x", (mpi_size,), dtype=np.float32)
+    particlePatches.create_group("extent/y")
+    particlePatches.create_group("extent/z")
+    particlePatches["extent/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
+    particlePatches["extent/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
+    particlePatches["extent/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
 
     # domain decomposition shall be 1D along x (but positions are still 3D)
     # we can therefor make the other components constant
@@ -521,10 +521,10 @@ def write_particles(f, iteration):
     particlePatches["offset/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
     particlePatches["offset/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
 
-    particlePatches["extend/y"].attrs["value"] = np.float32(128.0) # full size
-    particlePatches["extend/z"].attrs["value"] = np.float32(1.0)   # full size
-    particlePatches["extend/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
-    particlePatches["extend/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
+    particlePatches["extent/y"].attrs["value"] = np.float32(128.0) # full size
+    particlePatches["extent/z"].attrs["value"] = np.float32(1.0)   # full size
+    particlePatches["extent/y"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
+    particlePatches["extent/z"].attrs["shape"] = np.array([mpi_size], dtype=np.uint64)
 
     for rank in np.arange(mpi_size):
         # each MPI rank would write its part independently
@@ -533,11 +533,11 @@ def write_particles(f, iteration):
         # numParticlesOffset: offset within the one-dimensional records where
         #                     the first particle in this patch is stored
         particlePatches['numParticlesOffset'][rank] = rank*globalNumParticles / mpi_size
-        # offset and extend in the grid
+        # offset and extent in the grid
         # example: 1D domain decompositon of 3D simulation along the first axis
         # 1st dimension spatial offset
         particlePatches['offset/x'][rank] = rank * grid_layout[0] / mpi_size
-        particlePatches['extend/x'][rank] = grid_layout[0] / mpi_size
+        particlePatches['extent/x'][rank] = grid_layout[0] / mpi_size
 
 
 

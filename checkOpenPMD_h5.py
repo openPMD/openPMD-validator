@@ -711,21 +711,21 @@ def check_particles(f, iteration, v, pic) :
             result_array += test_key(species["particlePatches"], v, "required",
                                      "offset")
             result_array += test_key(species["particlePatches"], v, "required",
-                                     "extend")
+                                     "extent")
             if result_array[0] == 0 :
                 offset = species["particlePatches"]["offset"]
-                extend = species["particlePatches"]["extend"]
+                extent = species["particlePatches"]["extent"]
                 # Attributes of the components
                 for component_name in species["position"].keys() :
                     result_array += test_key( offset, v, "required",
                                               component_name)
-                    result_array += test_key( extend, v, "required",
+                    result_array += test_key( extent, v, "required",
                                               component_name)
                     if result_array[0] == 0 :
                         dset_offset = offset[component_name]
                         result_array += test_component(dset_offset, v)
-                        dset_extend = extend[component_name]
-                        result_array += test_component(dset_extend, v)
+                        dset_extent = extent[component_name]
+                        result_array += test_component(dset_extent, v)
 
         # Check the records required by the PIC extension
         if pic :
