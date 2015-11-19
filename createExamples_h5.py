@@ -129,7 +129,7 @@ def write_rho_cylindrical(meshes, mode0, mode1):
     rho.attrs["unitDimension"] = \
        np.array([-3.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #           L    M    T    I  theta  N    J
-       # rho is in Coulomb per meter cube: C / m^3 = A * s / m^3 -> M^-3 * T * I
+       # rho is in Coulomb per meter cube: C / m^3 = A * s / m^3 -> L^-3 * T * I
 
     # Add time information
     rho.attrs["timeOffset"] = 0. # Time offset with basePath's time
