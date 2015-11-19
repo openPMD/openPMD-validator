@@ -187,7 +187,7 @@ def write_b_2d_cartesian(meshes, data_ez):
     B.attrs["unitDimension"] = \
        np.array([0.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #          L    M     T     I  theta  N    J
-       # B is in Telsa : kg / (A * s^2) -> M * T^-2 * I^-1
+       # B is in Tesla : kg / (A * s^2) -> M * T^-2 * I^-1
 
     # Add specific information for PIC simulations at the group level
     add_EDPIC_attr_meshes(B)
