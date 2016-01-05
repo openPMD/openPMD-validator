@@ -70,7 +70,7 @@ def get_attr(f, name):
     Try to access the path `name` in the file `f`
     Return the corresponding attribute if it is present
     """
-    if name in f.attrs.keys():
+    if name in list(f.attrs.keys()):
         return(True, f.attrs[name])
     else:
         return(False, None)
@@ -137,7 +137,7 @@ def test_key(f, v, request, name):
     - The first element is 1 if an error occured, and 0 otherwise
     - The second element is 0 if a warning arised, and 0 otherwise
     """
-    valid = (name in f.keys())
+    valid = (name in list(f.keys()))
     if valid:
         if v:
             print("Key %s (%s) exists in `%s`!" %(name, request, str(f.name) ) )
@@ -413,7 +413,7 @@ def check_iterations(f, v, pic) :
     # Find all the iterations
     format_error = False
     try :
-        list_iterations = f['/data/'].keys()
+        list_iterations = list(f['/data/'].keys())
     except KeyError, TypeError :
         format_error = True
     else :
@@ -526,7 +526,7 @@ def check_meshes(f, iteration, v, pic):
         full_meshes_path = base_path + meshes_path
         # Find all the meshes
         try:
-            list_meshes = f[full_meshes_path].keys()
+            list_meshes = list(f[full_meshes_path].keys())
         except KeyError:
             list_meshes = []
     print( "Iteration %s : found %d meshes"
@@ -572,7 +572,7 @@ def check_meshes(f, iteration, v, pic):
                                 "required", "position", np.ndarray, [np.float32, np.float64])
         else:                          # If the record is a vector field
             # Loop over the components
-            for component_name in field.keys():
+            for component_name in list(field.keys()) :
                 component = field[component_name]
                 result_array += test_component(component, v)
                 result_array += test_attr(component, v,
@@ -675,7 +675,7 @@ def check_particles(f, iteration, v, pic) :
         full_particle_path = base_path + particles_path
         # Find all the particle species
         try:
-            list_species = f[full_particle_path].keys()
+            list_species = list(f[full_particle_path].keys())
         except KeyError:
             list_species = []
     print( "Iteration %s : found %d particle species"
@@ -722,7 +722,7 @@ def check_particles(f, iteration, v, pic) :
                 offset = species["particlePatches"]["offset"]
                 extent = species["particlePatches"]["extent"]
                 # Attributes of the components
-                for component_name in species["position"].keys() :
+                for component_name in list(species["position"].keys()) :
                     result_array += test_key( offset, v, "required",
                                               component_name)
                     result_array += test_key( extent, v, "required",
@@ -763,7 +763,7 @@ def check_particles(f, iteration, v, pic) :
                                 "particleSmoothingParameters", np.string_)
 
         # Check attributes of each record of the particle
-        for record in species.keys() :
+        for record in list(species.keys()) :
             # all records (but particlePatches) require units
             if record != "particlePatches":
                 result_array += test_attr(species[record], v,
@@ -782,7 +782,7 @@ def check_particles(f, iteration, v, pic) :
                     result_array += test_component(dset, v)
                 else : # Vector record
                     # Loop over the components
-                    for component_name in species[record].keys():
+                    for component_name in list(species[record].keys()):
                         dset = species[ os.path.join(record, component_name) ]
                         result_array += test_component(dset, v)
                 
