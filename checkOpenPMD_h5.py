@@ -93,7 +93,7 @@ def test_record(g, r):
     - The first element is 1 if an error occured, and 0 otherwise
     - The second element is 0 if a warning arised, and 0 otherwise
     """
-    regEx = re.compile("^\w+$")
+    regEx = re.compile("^\w+$") # Python3 only: re.ASCII
     if regEx.match(r):
         # test component names
         result_array = np.array([0,0])
@@ -216,13 +216,13 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
             if type(value) in is_type:
                 # np.string_ format or general ndarray dtype text
                 if type(value) is np.string_ and type_format is not None:
-                    regEx = re.compile(type_format)
-                    if regEx.match(value) :
+                    regEx = re.compile(type_format) # Python3 only: re.ASCII
+                    if regEx.match(value.decode()) :
                         result_array = np.array([0,0])
                     else:
                         print("Error: Attribute %s in `%s` does not satisfy " \
-                              "format (should be '%s')!" \
-                              %(name, str(f.name), type_format.__name__) )
+                              "format ('%s' should be in format '%s')!" \
+                              %(name, str(f.name), value.decode(), type_format ) )
                         result_array = np.array([1,0])
                 # ndarray dtypes
                 elif type(value) is np.ndarray:
@@ -476,7 +476,7 @@ def check_base_path(f, iteration, v, pic):
     result_array = np.array([ 0, 0])  
 
     # Find the path to the data
-    base_path = "/data/%s/" % iteration
+    base_path = ("/data/%s/" % iteration).encode('ascii')
     bp = f[base_path]
 
     # Check for the attributes of the STANDARD.md
@@ -518,12 +518,17 @@ def check_meshes(f, iteration, v, pic):
     # Find the path to the data
     base_path = "/data/%s/" % iteration
     valid, meshes_path = get_attr(f, "meshesPath")
+    if not valid :
+        print("Error: `meshesPath` is missing or malformed in '/'")
+        return( np.array([1, 0]) )
+    meshes_path = meshes_path.decode()
+
     if os.path.join( base_path, meshes_path) != ( base_path + meshes_path ):
         print("Error: `basePath`+`meshesPath` seems to be malformed "
             "(is `basePath` absolute and ends on a `/` ?)")
         return( np.array([1, 0]) )
     else:
-        full_meshes_path = base_path + meshes_path
+        full_meshes_path = (base_path + meshes_path).encode('ascii')
         # Find all the meshes
         try:
             list_meshes = list(f[full_meshes_path].keys())
@@ -534,7 +539,7 @@ def check_meshes(f, iteration, v, pic):
 
     # Check for the attributes of the STANDARD.md
     for field_name in list_meshes :
-        field = f[full_meshes_path + field_name]
+        field = f[full_meshes_path + field_name.encode('ascii')]
 
         result_array += test_record(f[full_meshes_path], field_name)
         
@@ -557,7 +562,7 @@ def check_meshes(f, iteration, v, pic):
         geometry_test = test_attr(field, v, "required", "geometry", np.string_)
         result_array += geometry_test
         # geometryParameters is required when using thetaMode
-        if geometry_test[0] == 0 and field.attrs["geometry"] == "thetaMode" :
+        if geometry_test[0] == 0 and field.attrs["geometry"] == b"thetaMode" :
             result_array += test_attr(field, v, "required",
                                             "geometryParameters", np.string_)
         # otherwise it is optional
@@ -594,7 +599,7 @@ def check_meshes(f, iteration, v, pic):
         result_array += test_attr(f[full_meshes_path], v, "required",
                                 "fieldBoundary", np.ndarray, np.string_)
         valid, field_boundary = get_attr(f[full_meshes_path], "fieldBoundary")
-        if (valid == True) and (np.any(field_boundary == "other")) :
+        if (valid == True) and (np.any(field_boundary == b"other")) :
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "fieldBoundaryParameters", np.ndarray, np.string_)
 
@@ -602,7 +607,7 @@ def check_meshes(f, iteration, v, pic):
         result_array += test_attr(f[full_meshes_path], v, "required",
                                 "particleBoundary", np.ndarray, np.string_)
         valid, particle_boundary = get_attr(f[full_meshes_path], "particleBoundary")
-        if (valid == True) and (np.any(particle_boundary == "other")) :
+        if (valid == True) and (np.any(particle_boundary == b"other")) :
             result_array += test_attr(f[full_meshes_path], v, "required",
                     "particleBoundaryParameters", np.ndarray, np.string_)
 
@@ -610,7 +615,7 @@ def check_meshes(f, iteration, v, pic):
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "currentSmoothing", np.string_)
         valid, current_smoothing = get_attr(f[full_meshes_path], "currentSmoothing")
-        if (valid == True) and (current_smoothing != "none") :
+        if (valid == True) and (current_smoothing != b"none") :
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "currentSmoothingParameters", np.string_)
     
@@ -618,17 +623,17 @@ def check_meshes(f, iteration, v, pic):
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "chargeCorrection", np.string_)
         valid, charge_correction = get_attr(f[full_meshes_path], "chargeCorrection")
-        if valid == True and charge_correction != "none":
+        if valid == True and charge_correction != b"none":
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "chargeCorrectionParameters", np.string_)
 
         # Check for the attributes of each record
         for field_name in list_meshes :
-            field = f[full_meshes_path + field_name]
+            field = f[full_meshes_path + field_name.encode('ascii')]
             result_array + test_attr(field, v, "required",
                                      "fieldSmoothing", np.string_)
             valid, field_smoothing = get_attr(field, "fieldSmoothing")
-            if (valid == True) and (field_smoothing != "none") :
+            if (valid == True) and (field_smoothing != b"none") :
                 result_array += test_attr(field,v, "required",
                                     "fieldSmoothingParameters", np.string_)
     return(result_array)
@@ -664,7 +669,7 @@ def check_particles(f, iteration, v, pic) :
     result_array = np.array([ 0, 0]) 
 
     # Find the path to the data
-    base_path = "/data/%s/" % iteration
+    base_path = ("/data/%s/" % iteration).encode('ascii')
     valid, particles_path = get_attr(f, "particlesPath")
     if os.path.join( base_path, particles_path) !=  \
         ( base_path + particles_path ) :
@@ -683,7 +688,7 @@ def check_particles(f, iteration, v, pic) :
 
     # Go through all the particle species
     for species_name in list_species :
-        species = f[full_particle_path + species_name]
+        species = f[full_particle_path + species_name.encode('ascii')]
         
         # Check all records for this species
         for species_record_name in species :
@@ -758,7 +763,7 @@ def check_particles(f, iteration, v, pic) :
             result_array += test_attr(species, v, "required",
                                       "particleSmoothing", np.string_)
             valid, particle_smoothing = get_attr(species, "particleSmoothing")
-            if valid == True and particle_smoothing != "none":            
+            if valid == True and particle_smoothing != b"none":
                 result_array += test_attr(species, v, "required",
                                 "particleSmoothingParameters", np.string_)
 
