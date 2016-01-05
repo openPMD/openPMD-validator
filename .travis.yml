@@ -1,0 +1,20 @@
+language: python
+python:
+  - "2.7"
+  - "3.5"
+
+matrix:
+  allow_failures:
+    - python: "3.5"
+
+addons:
+  apt:
+    packages:
+      - libhdf5-serial-dev
+
+install:
+  - pip install -r requirements.txt
+
+script: 
+  - ./createExamples_h5.py
+  - ./checkOpenPMD_h5.py -i example.h5 --EDPIC
