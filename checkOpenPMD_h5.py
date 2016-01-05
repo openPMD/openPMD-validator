@@ -414,7 +414,7 @@ def check_iterations(f, v, pic) :
     format_error = False
     try :
         list_iterations = list(f['/data/'].keys())
-    except KeyError, TypeError :
+    except KeyError :
         format_error = True
     else :
         # Check that these iterations are indeed encoded as integers
@@ -424,7 +424,7 @@ def check_iterations(f, v, pic) :
                     format_error = True                    
     # Detect any error and interrupt execution if one is found
     if format_error == True :
-        print("Error: it seems that the path of the data within the HDF5 file"
+        print("Error: it seems that the path of the data within the HDF5 file "
               "is not of the form '/data/%T/', where %T corresponds to an "
               "actual integer.")
         return(np.array([1, 0]))
