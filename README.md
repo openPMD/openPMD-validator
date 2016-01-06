@@ -33,4 +33,4 @@ Each branch corresponds to a certain version of the standard and might
 be updated in case tests did contain bugs or we found a way to cover more
 sections of the standard.
 
-Build status: [![Build Status](https://travis-ci.org/openPMD/openPMD-validator.svg?branch=1.0.0)](https://travis-ci.org/openPMD/openPMD-validator)
+[![Build Status](https://travis-ci.org/openPMD/openPMD-validator.svg?branch=1.0.0)](https://travis-ci.org/openPMD/openPMD-validator)
