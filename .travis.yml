@@ -3,18 +3,33 @@ python:
   - "2.7"
   - "3.5"
 
-matrix:
-  allow_failures:
-    - python: "3.5"
-
 addons:
   apt:
     packages:
       - libhdf5-serial-dev
 
-install:
-  - pip install -r requirements.txt
+cache:
+  apt: true
+  directories:
+    - $HOME/.cache/pip
 
-script: 
+install:
+  - pip install --upgrade pyflakes
+# - pip install --upgrade flake8
+# - pip install --upgrade pylint
+  - pip install --upgrade -r requirements.txt
+
+before_script:
+  # static code analysis
+  #   pyflakes: mainly warnings, unused code, etc.
+  - python -m pyflakes .
+  #   flake8: style only, enforce PEP 8
+  # - python -m flake8 .
+  #   Pylint: yet an other linter    
+  # - python -m pylint createExamples_h5.py
+  # - python -m pylint createExamples_h5.py
+
+script:
+  # execute actual scripts
   - ./createExamples_h5.py
   - ./checkOpenPMD_h5.py -i example.h5 --EDPIC
