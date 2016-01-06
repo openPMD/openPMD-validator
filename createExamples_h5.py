@@ -17,7 +17,6 @@
 
 import h5py as h5
 import numpy as np
-import sys
 import datetime
 from dateutil.tz import tzlocal
 
@@ -35,7 +34,8 @@ def get_basePath(f, iteration):
     -------
     A string with a in-file path.
     """
-    return f.attrs["basePath"].replace("%T", str(iteration))
+    iteration_str = np.string_(str(iteration))
+    return np.string_(f.attrs["basePath"]).replace(b"%T", iteration_str)
 
 def setup_base_path(f, iteration):
     """
@@ -140,7 +140,7 @@ def write_rho_cylindrical(meshes, mode0, mode1):
     rho.attrs["position"] = np.array([0.0, 0.0], dtype=np.float32)
     rho.attrs["gridUnitSI"] = np.float64(1.0)
     rho.attrs["dataOrder"] = np.string_("C")
-    rho.attrs["axisLabels"] = np.array(["r","z"])
+    rho.attrs["axisLabels"] = np.array([b"r",b"z"])
     
     # Add specific information for PIC simulations
     add_EDPIC_attr_meshes(rho)
@@ -168,14 +168,14 @@ def write_b_2d_cartesian(meshes, data_ez):
         (The first axis corresponds to x, and the second axis corresponds to y)
     """
     # Path to the E field, within the h5py file
-    full_b_path_name = "B"
+    full_b_path_name = b"B"
     meshes.create_group(full_b_path_name)
     B = meshes[full_b_path_name]
 
     # Create the dataset (2d cartesian grid)
-    B.create_group("x")
-    B.create_group("y")
-    B.create_dataset("z", data_ez.shape, dtype=np.float32)
+    B.create_group(b"x")
+    B.create_group(b"y")
+    B.create_dataset(b"z", data_ez.shape, dtype=np.float32)
 
     # Write the common metadata for the group
     B.attrs["geometry"] = np.string_("cartesian")
@@ -183,7 +183,7 @@ def write_b_2d_cartesian(meshes, data_ez):
     B.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)  
     B.attrs["gridUnitSI"] = np.float64(1.0)
     B.attrs["dataOrder"] = np.string_("C")
-    B.attrs["axisLabels"] = np.array(["x","y"])
+    B.attrs["axisLabels"] = np.array([b"x",b"y"])
     B.attrs["unitDimension"] = \
        np.array([0.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #          L    M     T     I  theta  N    J
@@ -230,14 +230,14 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
         (The first axis corresponds to x, and the second axis corresponds to y)
     """
     # Path to the E field, within the h5py file
-    full_e_path_name = "E"
+    full_e_path_name = b"E"
     meshes.create_group(full_e_path_name)
     E = meshes[full_e_path_name]
 
     # Create the dataset (2d cartesian grid)
-    E.create_dataset("x", data_ex.shape, dtype=np.float32)
-    E.create_dataset("y", data_ey.shape, dtype=np.float32)
-    E.create_dataset("z", data_ez.shape, dtype=np.float32)
+    E.create_dataset(b"x", data_ex.shape, dtype=np.float32)
+    E.create_dataset(b"y", data_ey.shape, dtype=np.float32)
+    E.create_dataset(b"z", data_ez.shape, dtype=np.float32)
 
     # Write the common metadata for the group
     E.attrs["geometry"] = np.string_("cartesian")
@@ -245,7 +245,7 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
     E.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)  
     E.attrs["gridUnitSI"] = np.float64(1.0)
     E.attrs["dataOrder"] = np.string_("C")
-    E.attrs["axisLabels"] = np.array(["x","y"])
+    E.attrs["axisLabels"] = np.array([b"x",b"y"])
     E.attrs["unitDimension"] = \
        np.array([1.0, 1.0, -3.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #          L    M     T     I  theta  N    J
@@ -320,9 +320,9 @@ def write_meshes(f, iteration):
     # Extension: Additional attributes for ED-PIC
     meshes.attrs["fieldSolver"] = np.string_("Yee")
     meshes.attrs["fieldBoundary"] = np.array(
-        ["periodic", "periodic", "open", "open"])
+        [b"periodic", b"periodic", b"open", b"open"])
     meshes.attrs["particleBoundary"] = np.array(
-        ["periodic", "periodic", "absorbing", "absorbing"])
+        [b"periodic", b"periodic", b"absorbing", b"absorbing"])
     meshes.attrs["currentSmoothing"] = np.string_("Binomial")
     meshes.attrs["currentSmoothingParameters"] = \
          np.string_("period=1;numPasses=2;compensator=false")
@@ -349,8 +349,8 @@ def write_meshes(f, iteration):
 
 def write_particles(f, iteration):
     fullParticlesPath = get_basePath(f, iteration) + f.attrs["particlesPath"]
-    f.create_group(fullParticlesPath + "electrons")
-    electrons = f[fullParticlesPath + "electrons"]
+    f.create_group(fullParticlesPath + b"electrons")
+    electrons = f[fullParticlesPath + b"electrons"]
 
     globalNumParticles = 128 # example number of all particles
 
@@ -363,7 +363,7 @@ def write_particles(f, iteration):
     # currently none
 
     # constant scalar particle records (that could also be variable records)
-    electrons.create_group("charge")
+    electrons.create_group(b"charge")
     charge = electrons["charge"]
     charge.attrs["value"] = -1.0
     charge.attrs["shape"] = np.array([globalNumParticles], dtype=np.uint64)
@@ -382,7 +382,7 @@ def write_particles(f, iteration):
        #          L    M    T    I  theta  N    J
        # C = A * s
 
-    electrons.create_group("mass")
+    electrons.create_group(b"mass")
     mass = electrons["mass"]
     mass.attrs["value"] = 1.0
     mass.attrs["shape"] = np.array([globalNumParticles], dtype=np.uint64)
@@ -401,7 +401,7 @@ def write_particles(f, iteration):
        #          L    M    T    I  theta  N    J
 
     # scalar particle records (non-const/individual per particle)
-    electrons.create_dataset("weighting", (globalNumParticles,),
+    electrons.create_dataset(b"weighting", (globalNumParticles,),
                              dtype=np.float32)
     weighting = electrons["weighting"]
     # macroWeighted: True(1) by definition
@@ -417,7 +417,7 @@ def write_particles(f, iteration):
     # plain floating point number
        
     # Position of each particle
-    electrons.create_group("position")
+    electrons.create_group(b"position")
     position = electrons["position"]
     position.create_dataset("x", (globalNumParticles,), dtype=np.float32)
     position.create_dataset("y", (globalNumParticles,), dtype=np.float32)
@@ -439,16 +439,16 @@ def write_particles(f, iteration):
        # Dimension of Length per component
 
     # Position offset of each particle
-    electrons.create_group("positionOffset")
+    electrons.create_group(b"positionOffset")
     offset = electrons["positionOffset"]
     # Constant components here (typical of a moving window along z)
-    offset.create_group("x")
+    offset.create_group(b"x")
     offset["x"].attrs["value"] = np.float32(0.)
     offset["x"].attrs["shape"] = np.array([globalNumParticles], dtype=np.uint64)
-    offset.create_group("y")
+    offset.create_group(b"y")
     offset["y"].attrs["value"] = np.float32(0.)
     offset["y"].attrs["shape"] = np.array([globalNumParticles], dtype=np.uint64)
-    offset.create_group("z")
+    offset.create_group(b"z")
     offset["z"].attrs["value"] = np.float32(100.)
     offset["z"].attrs["shape"] = np.array([globalNumParticles], dtype=np.uint64)
     # Conversion factor to SI units
@@ -468,7 +468,7 @@ def write_particles(f, iteration):
        # Dimension of Length per component
     
     # Momentum of each particle
-    electrons.create_group("momentum")
+    electrons.create_group(b"momentum")
     momentum = electrons["momentum"]
     momentum.create_dataset("x", (globalNumParticles,), dtype=np.float32)
     momentum.create_dataset("y", (globalNumParticles,), dtype=np.float32)
@@ -496,20 +496,20 @@ def write_particles(f, iteration):
     mpi_size = 4  # "emulate" example MPI run with 4 ranks
     # 2 + 2 * Dimensionality of position record
     grid_layout = np.array( [512, 128, 1] ) # global grid in cells
-    electrons.create_group("particlePatches")
+    electrons.create_group(b"particlePatches")
     particlePatches = electrons["particlePatches"]
 
     particlePatches.create_dataset("numParticles", (mpi_size,), dtype=np.uint64)
     particlePatches.create_dataset("numParticlesOffset", (mpi_size,), dtype=np.uint64)
     particlePatches.create_dataset("offset/x", (mpi_size,), dtype=np.float32)
-    particlePatches.create_group("offset/y")
-    particlePatches.create_group("offset/z")
+    particlePatches.create_group(b"offset/y")
+    particlePatches.create_group(b"offset/z")
     particlePatches["offset/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
     particlePatches["offset/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
     particlePatches["offset/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
     particlePatches.create_dataset("extent/x", (mpi_size,), dtype=np.float32)
-    particlePatches.create_group("extent/y")
-    particlePatches.create_group("extent/z")
+    particlePatches.create_group(b"extent/y")
+    particlePatches.create_group(b"extent/z")
     particlePatches["extent/x"].attrs["unitSI"] = offset["x"].attrs["unitSI"]
     particlePatches["extent/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
     particlePatches["extent/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
