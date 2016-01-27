@@ -357,11 +357,19 @@ def check_root_attr(f, v, pic):
     #   required
     result_array += test_attr(f, v, "required", "openPMD", np.string_, "^[0-9]+\.[0-9]+\.[0-9]+$")
     result_array += test_attr(f, v, "required", "openPMDextension", np.uint32)
-    result_array += test_attr(f, v, "required", "basePath", np.string_)
+    result_array += test_attr(f, v, "required", "basePath", np.string_, "^\/data\/\%T\/$")
     result_array += test_attr(f, v, "required", "meshesPath", np.string_)
     result_array += test_attr(f, v, "required", "particlesPath", np.string_)
-    result_array += test_attr(f, v, "required", "iterationEncoding", np.string_)
+    result_array += test_attr(f, v, "required", "iterationEncoding", np.string_, "^groupBased|fileBased$")
     result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
+
+    # groupBased iteration encoding needs to match basePath
+    if result_array[0] == 0 :
+        if f.attrs["iterationEncoding"].decode() == "groupBased" :
+            if f.attrs["iterationFormat"].decode() != f.attrs["basePath"].decode() :
+                print("Error: for groupBased iterationEncoding the basePath "
+                      "and iterationFormat must match!")
+                result_array += np.array([1,0])
 
     #   recommended
     result_array += test_attr(f, v, "recommended", "author", np.string_)
