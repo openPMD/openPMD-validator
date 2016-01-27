@@ -357,7 +357,7 @@ def check_root_attr(f, v, pic):
     #   required
     result_array += test_attr(f, v, "required", "openPMD", np.string_, "^[0-9]+\.[0-9]+\.[0-9]+$")
     result_array += test_attr(f, v, "required", "openPMDextension", np.uint32)
-    result_array += test_attr(f, v, "required", "basePath", np.string_)
+    result_array += test_attr(f, v, "required", "basePath", np.string_, "^\/data\/\%T\/$")
     result_array += test_attr(f, v, "required", "meshesPath", np.string_)
     result_array += test_attr(f, v, "required", "particlesPath", np.string_)
     result_array += test_attr(f, v, "required", "iterationEncoding", np.string_)
