@@ -78,7 +78,7 @@ def setup_root_attr(f):
     f.attrs["basePath"] = np.string_("/data/%T/")
     f.attrs["meshesPath"] = np.string_("meshes/")
     f.attrs["particlesPath"] = np.string_("particles/")
-    f.attrs["iterationEncoding"] = np.string_("fileBased")
+    f.attrs["iterationEncoding"] = np.string_("groupBased")
     f.attrs["iterationFormat"] = np.string_("/data/%T/")
 
     # Recommended attributes
