@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2015, Axel Huebl, Remi Lehe
+# Copyright (c) 2015-2016, Axel Huebl, Remi Lehe, Richard Pausch
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -383,6 +383,12 @@ def check_root_attr(f, v, pic):
                       "`openPMDextension` (is %s)!" \
                      %(ext_list[0][1], ext_list[0][0], extensionIDs) )
                 result_array += np.array([1,0])
+
+    # Verify that basePath == u"/data/%T/" (required by 1.0.0)
+    valid_tmp, base_path_tmp = get_attr(f, "basePath")
+    if base_path_tmp != u"/data/%T/":
+        print("Error: `basePath` not equal `/data/%T/`")
+        result_array[0] += 1
 
     return(result_array)
 
