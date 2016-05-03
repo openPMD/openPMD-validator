@@ -42,7 +42,7 @@ def parse_cmd(argv):
     try:
         opts, args = getopt.getopt(argv,"hvi:e",["file=","EDPIC"])
     except getopt.GetoptError:
-        print('test.py -i <fileName>')
+        print('checkOpenPMD_h5.py -i <fileName>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
