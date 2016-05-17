@@ -24,8 +24,11 @@ standard.
 
 For more information on requirements for implementations, please refer to the
 section
-[*Implementations*](https://github.com/openPMD/openPMD/blob/1.0.0/STANDARD.md#implementations)
-of the openPMD standard.
+[*Implementations*](https://github.com/openPMD/openPMD-standard/blob/1.0.0/STANDARD.md#implementations)
+of the openPMD standard. The repository
+  [openPMD-projects](https://github.com/openPMD/openPMD-projects)
+also lists a large collection of open source projects that already implement
+the openPMD standard.
 
 
 Development
