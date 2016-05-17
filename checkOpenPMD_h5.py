@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2015, Axel Huebl, Remi Lehe
+# Copyright (c) 2015-2016, Axel Huebl, Remi Lehe
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -58,7 +58,7 @@ def parse_cmd(argv):
     return(file_name, verbose, extension_pic)
 
 
-def open_file(fileName):
+def open_file(file_name):
     if h5.is_hdf5(file_name):
         f = h5.File(file_name, "r")
         return(f)
