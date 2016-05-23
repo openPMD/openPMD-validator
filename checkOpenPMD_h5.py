@@ -593,8 +593,7 @@ def check_meshes(f, iteration, v, pic):
 
     # Check for the attributes of the PIC extension,
     # if asked to do so by the user 
-    if pic:
-        
+    if pic and len(list_meshes) > 0:
         # Check the attributes associated with the field solver
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "fieldSolver", np.string_)
