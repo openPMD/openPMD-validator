@@ -817,3 +817,6 @@ if __name__ == "__main__":
     # results
     print("Result: %d Errors and %d Warnings."
           %( result_array[0], result_array[1]))
+
+    # return code: non-zero is unix-style for errors occured
+    sys.exit(result_array[0])
