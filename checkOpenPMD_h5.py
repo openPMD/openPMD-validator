@@ -818,4 +818,4 @@ if __name__ == "__main__":
           %( result_array[0], result_array[1]))
 
     # return code: non-zero is unix-style for errors occured
-    sys.exit(result_array[0])
+    sys.exit(int(result_array[0]))
