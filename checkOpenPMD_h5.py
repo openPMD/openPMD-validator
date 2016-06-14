@@ -75,7 +75,27 @@ def get_attr(f, name):
         return(True, f.attrs[name])
     else:
         return(False, None)
-
+        
+def get_extensions(f, v):
+    """
+    Get a dictionary which maps each extension name to a bool whether it is enabled in the file
+    """
+    valid, extensionIDs = get_attr(f, "openPMDextension")
+    result = {ext: False for ext in ext_list.keys()}
+    if valid:
+        enabledExtMask = 0
+        for extension in ext_list.keys():
+            if (ext_list[extension] & extensionIDs) == ext_list[extension]:
+                result[extension] = True
+                enabledExtMask |= ext_list[extension]
+                if v:
+                    print("Info: Found extension '%s'." % extension)
+        excessIDs = extensionIDs & ~enabledExtMask
+        if excessIDs:
+            print("Warning: Unknown extension IDs: %s" % excessIDs)
+    return result
+       
+        
 def test_record(g, r):
     """
     Checks if a record is valid
@@ -328,7 +348,7 @@ def test_component(c, v) :
     return(result_array)
 
 
-def check_root_attr(f, v, pic):
+def check_root_attr(f, v, requiredExtensions):
     """
     Scan the root of the file and make sure that all the attributes are present
 
@@ -340,8 +360,8 @@ def check_root_attr(f, v, pic):
     v : bool
         Verbose option
     
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    requiredExtensions : list of extension names
+        extensions that should be enabled
 
     Returns
     -------
@@ -383,9 +403,6 @@ def check_root_attr(f, v, pic):
     #   optional
     result_array += test_attr(f, v, "optional", "comment", np.string_)
 
-    requiredExtensions = []
-    if pic:
-        requiredExtensions.append("ED-PIC")
     valid, extensionIDs = get_attr(f, "openPMDextension")
     if valid:
         for extension in requiredExtensions:
@@ -398,7 +415,7 @@ def check_root_attr(f, v, pic):
     return(result_array)
 
 
-def check_iterations(f, v, pic) :
+def check_iterations(f, v, extensionStates) :
     """
     Scan all the iterations present in the file, checking both
     the meshes and the particles
@@ -411,8 +428,8 @@ def check_iterations(f, v, pic) :
     v : bool
         Verbose option
     
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary string:bool
+        Whether an extension is enabled
 
     Returns
     -------
@@ -449,15 +466,15 @@ def check_iterations(f, v, pic) :
         
     # Loop over the iterations and check the meshes and the particles 
     for iteration in list_iterations :
-        result_array += check_base_path(f, iteration, v, pic)
+        result_array += check_base_path(f, iteration, v, extensionStates)
         # Go deeper only if there is no error at this point
         if result_array[0] == 0 :
-            result_array += check_meshes(f, iteration, v, pic)
-            result_array += check_particles(f, iteration, v, pic)
+            result_array += check_meshes(f, iteration, v, extensionStates)
+            result_array += check_particles(f, iteration, v, extensionStates)
 
     return(result_array)
     
-def check_base_path(f, iteration, v, pic):
+def check_base_path(f, iteration, v, extensionStates):
     """
     Scan the base_path that corresponds to this iteration
 
@@ -472,8 +489,8 @@ def check_base_path(f, iteration, v, pic):
     v : bool
         Verbose option
         
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary string:bool
+        Whether an extension is enabled
     
     Returns
     -------
@@ -497,7 +514,7 @@ def check_base_path(f, iteration, v, pic):
 
     return(result_array)
     
-def check_meshes(f, iteration, v, pic):
+def check_meshes(f, iteration, v, extensionStates):
     """
     Scan all the meshes corresponding to one iteration
 
@@ -512,8 +529,8 @@ def check_meshes(f, iteration, v, pic):
     v : bool
         Verbose option
         
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary string:bool
+        Whether an extension is enabled
     
     Returns
     -------
@@ -596,7 +613,7 @@ def check_meshes(f, iteration, v, pic):
 
     # Check for the attributes of the PIC extension,
     # if asked to do so by the user 
-    if pic and len(list_meshes) > 0:
+    if extensionStates['ED-PIC'] and len(list_meshes) > 0:
         # Check the attributes associated with the field solver
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "fieldSolver", np.string_)
@@ -649,7 +666,7 @@ def check_meshes(f, iteration, v, pic):
     return(result_array)
 
 
-def check_particles(f, iteration, v, pic) :
+def check_particles(f, iteration, v, extensionStates) :
     """
     Scan all the particle data corresponding to one iteration
 
@@ -664,8 +681,8 @@ def check_particles(f, iteration, v, pic) :
     v : bool
         Verbose option
         
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary string:bool
+        Whether an extension is enabled
     
     Returns
     -------
@@ -749,7 +766,7 @@ def check_particles(f, iteration, v, pic) :
                         result_array += test_component(dset_extent, v)
 
         # Check the records required by the PIC extension
-        if pic :
+        if extensionStates['ED-PIC'] :
             result_array += test_key(species, v, "required", "momentum")
             result_array += test_key(species, v, "required", "charge")
             result_array += test_key(species, v, "required", "mass")
@@ -759,7 +776,7 @@ def check_particles(f, iteration, v, pic) :
             result_array += test_key(species, v, "optional", "neutronNumber")
 
         # Check the attributes associated with the PIC extension
-        if pic :
+        if extensionStates['ED-PIC'] :
             result_array += test_attr(species, v, "required",
                                       "particleShape", [np.float32, np.float64])
             result_array += test_attr(species, v, "required",
@@ -786,7 +803,7 @@ def check_particles(f, iteration, v, pic) :
                 time_type = f[base_path].attrs["time"].dtype.type
                 result_array += test_attr(species[record], v, "required",
                                           "timeOffset", time_type)
-                if pic :
+                if extensionStates['ED-PIC'] :
                     result_array += test_attr(species[record], v, "required",
                                               "weightingPower", np.float64)
                     result_array += test_attr(species[record], v, "required",
@@ -807,25 +824,24 @@ def check_particles(f, iteration, v, pic) :
 if __name__ == "__main__":
     file_name, verbose, extension_pic = parse_cmd(sys.argv[1:])
     f = open_file(file_name)
+    requiredExtensions = []
+    if extension_pic:
+        requiredExtensions.append('ED-PIC')
 
     # root attributes at "/"
     result_array = np.array([0, 0])
-    result_array += check_root_attr(f, verbose, extension_pic)
+    result_array += check_root_attr(f, verbose, requiredExtensions)
     
-    # Check for enabled extensions (After checking root attributes so we
-    # can detect if one is missing from the attribute)
-    valid, extensionIDs = get_attr(f, "openPMDextension")
-    if valid and (ext_list["ED-PIC"] & extensionIDs) == ext_list["ED-PIC"]:
-        extension_pic = True
+    extensionStates = get_extensions(f, verbose)
 
     # Go through all the iterations, checking both the particles
     # and the meshes
-    result_array += check_iterations(f, verbose, extension_pic)
+    result_array += check_iterations(f, verbose, extensionStates)
 
     # results
     print("Result: %d Errors and %d Warnings."
           %( result_array[0], result_array[1]))
 
-    # return code: non-zero is unix-style for errors occured
+    # return code: non-zero is Unix-style for errors occurred
     sys.exit(int(result_array[0]))
 
