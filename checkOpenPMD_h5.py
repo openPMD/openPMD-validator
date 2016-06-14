@@ -24,7 +24,7 @@ import sys, getopt, os.path
 
 openPMD = "1.0.0"
 
-ext_list = [["ED-PIC", np.uint32(1)]]
+ext_list = {"ED-PIC": np.uint32(1)}
 
 def help():
     """ Print usage information for this file """
@@ -90,8 +90,8 @@ def test_record(g, r):
     Returns
     -------
     An array with 2 elements :
-    - The first element is 1 if an error occured, and 0 otherwise
-    - The second element is 0 if a warning arised, and 0 otherwise
+    - The first element is 1 if an error occurred, and 0 otherwise
+    - The second element is 0 if a warning arose, and 0 otherwise
     """
     regEx = re.compile("^\w+$") # Python3 only: re.ASCII
     if regEx.match(r):
@@ -113,7 +113,7 @@ def test_record(g, r):
 def test_key(f, v, request, name):
     """
     Checks whether a key is present. A key can either be
-    a h5py.Group or a h5py.Dataset.
+    a h5py.Group or a h5py.DataSet.
     Returns an error if the key if absent and requested
     Returns a warning if the key if absent and recommended
 
@@ -134,8 +134,8 @@ def test_key(f, v, request, name):
     Returns
     -------
     An array with 2 elements :
-    - The first element is 1 if an error occured, and 0 otherwise
-    - The second element is 0 if a warning arised, and 0 otherwise
+    - The first element is 1 if an error occurred, and 0 otherwise
+    - The second element is 0 if a warning arose, and 0 otherwise
     """
     valid = (name in list(f.keys()))
     if valid:
@@ -165,7 +165,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
     """
     Checks whether an attribute is present.
     Returns an error if the attribute if absent and requested
-    Returns a warning if the attribute if absent and recommanded
+    Returns a warning if the attribute if absent and recommended
 
     Parameters
     ----------
@@ -194,8 +194,8 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
     Returns
     -------
     An array with 2 elements :
-    - The first element is 1 if an error occured, and 0 otherwise
-    - The second element is 0 if a warning arised, and 0 otherwise
+    - The first element is 1 if an error occurred, and 0 otherwise
+    - The second element is 0 if a warning arose, and 0 otherwise
     """
     valid, value = get_attr(f, name)
     if valid:
@@ -271,7 +271,7 @@ def is_scalar_record(r):
 
     Parameters
     ----------
-    r : an h5py.Group or h5py.Dataset object
+    r : an h5py.Group or h5py.DataSet object
         the record that shall be tested
 
     Returns
@@ -298,7 +298,7 @@ def test_component(c, v) :
 
     Parameters
     ----------
-    c : an h5py.Group or h5py.Dataset object
+    c : an h5py.Group or h5py.DataSet object
         the record component that shall be tested
 
     v : bool
@@ -382,14 +382,16 @@ def check_root_attr(f, v, pic):
     #   optional
     result_array += test_attr(f, v, "optional", "comment", np.string_)
 
-    # Extension: ED-PIC
+    requiredExtensions = []
     if pic:
-        valid, extensionIDs = get_attr(f, "openPMDextension")
-        if valid:
-            if (ext_list[0][1] & extensionIDs) != extensionIDs:
+        requiredExtensions.append("ED-PIC")
+    valid, extensionIDs = get_attr(f, "openPMDextension")
+    if valid:
+        for extension in requiredExtensions:
+            if (ext_list[extension] & extensionIDs) != ext_list[extension]:
                 print("Error: ID=%s for extension `%s` not found in " \
                       "`openPMDextension` (is %s)!" \
-                     %(ext_list[0][1], ext_list[0][0], extensionIDs) )
+                     %(ext_list[extension], extension, extensionIDs) )
                 result_array += np.array([1,0])
 
     return(result_array)
