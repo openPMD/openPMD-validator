@@ -78,21 +78,37 @@ def get_attr(f, name):
         
 def get_extensions(f, v):
     """
-    Get a dictionary which maps each extension name to a bool whether it is enabled in the file
+    Get a dictionary which maps each extension name to a bool whether it is
+    enabled in the file
+
+    Parameters
+    ----------
+    f : an h5py.File or h5py.Group object
+        The object in which to find claimed extensions
+    v : bool
+        Verbose option
+    
+    Returns
+    -------
+    A dictionary {string:bool} where the keys are the extension names and the
+    bool states whether it is enabled or not
     """
     valid, extensionIDs = get_attr(f, "openPMDextension")
     result = {ext: False for ext in ext_list.keys()}
     if valid:
         enabledExtMask = 0
-        for extension in ext_list.keys():
-            if (ext_list[extension] & extensionIDs) == ext_list[extension]:
+        for extension, bitmask in ext_list.items():
+            # This uses a bitmask to identify activated extensions
+            if (bitmask & extensionIDs) == bitmask:
                 result[extension] = True
-                enabledExtMask |= ext_list[extension]
+                enabledExtMask |= bitmask
                 if v:
                     print("Info: Found extension '%s'." % extension)
+        # Mask out the extension bits we have already detected so only
+        # unknown ones are left
         excessIDs = extensionIDs & ~enabledExtMask
         if excessIDs:
-            print("Warning: Unknown extension IDs: %s" % excessIDs)
+            print("Warning: Unknown extension Mask left: %s" % excessIDs)
     return result
        
         
@@ -416,7 +432,7 @@ def check_iterations(f, v, extensionStates) :
     v : bool
         Verbose option
     
-    extensionStates : Dictionary string:bool
+    extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
 
     Returns
@@ -477,7 +493,7 @@ def check_base_path(f, iteration, v, extensionStates):
     v : bool
         Verbose option
         
-    extensionStates : Dictionary string:bool
+    extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
     
     Returns
@@ -517,7 +533,7 @@ def check_meshes(f, iteration, v, extensionStates):
     v : bool
         Verbose option
         
-    extensionStates : Dictionary string:bool
+    extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
     
     Returns
@@ -669,7 +685,7 @@ def check_particles(f, iteration, v, extensionStates) :
     v : bool
         Verbose option
         
-    extensionStates : Dictionary string:bool
+    extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
     
     Returns
@@ -819,7 +835,7 @@ if __name__ == "__main__":
     
     extensionStates = get_extensions(f, verbose)
     if extension_pic and not extensionStates["ED-PIC"] :
-        print("Error: Extension `ED-PIC` not enabled!")
+        print("Error: Extension `ED-PIC` not found in file!")
         result_array += np.array([1, 0])
 
     # Go through all the iterations, checking both the particles
