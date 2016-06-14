@@ -348,7 +348,7 @@ def test_component(c, v) :
     return(result_array)
 
 
-def check_root_attr(f, v, requiredExtensions):
+def check_root_attr(f, v):
     """
     Scan the root of the file and make sure that all the attributes are present
 
@@ -359,9 +359,6 @@ def check_root_attr(f, v, requiredExtensions):
         
     v : bool
         Verbose option
-    
-    requiredExtensions : list of extension names
-        extensions that should be enabled
 
     Returns
     -------
@@ -402,15 +399,6 @@ def check_root_attr(f, v, requiredExtensions):
 
     #   optional
     result_array += test_attr(f, v, "optional", "comment", np.string_)
-
-    valid, extensionIDs = get_attr(f, "openPMDextension")
-    if valid:
-        for extension in requiredExtensions:
-            if (ext_list[extension] & extensionIDs) != ext_list[extension]:
-                print("Error: ID=%s for extension `%s` not found in " \
-                      "`openPMDextension` (is %s)!" \
-                     %(ext_list[extension], extension, extensionIDs) )
-                result_array += np.array([1,0])
 
     return(result_array)
 
@@ -824,15 +812,15 @@ def check_particles(f, iteration, v, extensionStates) :
 if __name__ == "__main__":
     file_name, verbose, extension_pic = parse_cmd(sys.argv[1:])
     f = open_file(file_name)
-    requiredExtensions = []
-    if extension_pic:
-        requiredExtensions.append('ED-PIC')
 
     # root attributes at "/"
     result_array = np.array([0, 0])
-    result_array += check_root_attr(f, verbose, requiredExtensions)
+    result_array += check_root_attr(f, verbose)
     
     extensionStates = get_extensions(f, verbose)
+    if extension_pic and not extensionStates["ED-PIC"] :
+        print("Error: Extension `ED-PIC` not enabled!")
+        result_array += np.array([1, 0])
 
     # Go through all the iterations, checking both the particles
     # and the meshes
