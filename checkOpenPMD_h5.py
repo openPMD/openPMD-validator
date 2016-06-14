@@ -54,6 +54,7 @@ def parse_cmd(argv):
         elif opt in ("-i", "--file"):
             file_name = arg
     if not os.path.isfile(file_name):
+        print("File '%s' not found!" % file_name)
         help()
     return(file_name, verbose, extension_pic)
 
