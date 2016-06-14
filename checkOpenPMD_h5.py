@@ -810,6 +810,12 @@ if __name__ == "__main__":
     # root attributes at "/"
     result_array = np.array([0, 0])
     result_array += check_root_attr(f, verbose, extension_pic)
+    
+    # Check for enabled extensions (After checking root attributes so we
+    # can detect if one is missing from the attribute)
+    valid, extensionIDs = get_attr(f, "openPMDextension")
+    if valid and (ext_list["ED-PIC"] & extensionIDs) == ext_list["ED-PIC"]:
+        extension_pic = True
 
     # Go through all the iterations, checking both the particles
     # and the meshes
@@ -821,3 +827,4 @@ if __name__ == "__main__":
 
     # return code: non-zero is unix-style for errors occured
     sys.exit(int(result_array[0]))
+
