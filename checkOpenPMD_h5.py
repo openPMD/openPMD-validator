@@ -38,7 +38,7 @@ def parse_cmd(argv):
     """ Parse the command line arguments """
     file_name = ''
     verbose = False
-    extension_pic = False
+    force_extension_pic = False
     try:
         opts, args = getopt.getopt(argv,"hvi:e",["file=","EDPIC"])
     except getopt.GetoptError:
@@ -50,13 +50,13 @@ def parse_cmd(argv):
         elif opt in ("-v", "--verbose"):
             verbose = True
         elif opt in ("--EDPIC"):
-            extension_pic = True
+            force_extension_pic = True
         elif opt in ("-i", "--file"):
             file_name = arg
     if not os.path.isfile(file_name):
         print("File '%s' not found!" % file_name)
         help()
-    return(file_name, verbose, extension_pic)
+    return(file_name, verbose, force_extension_pic)
 
 
 def open_file(file_name):
@@ -826,7 +826,7 @@ def check_particles(f, iteration, v, extensionStates) :
 
     
 if __name__ == "__main__":
-    file_name, verbose, extension_pic = parse_cmd(sys.argv[1:])
+    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
     f = open_file(file_name)
 
     # root attributes at "/"
@@ -834,7 +834,7 @@ if __name__ == "__main__":
     result_array += check_root_attr(f, verbose)
     
     extensionStates = get_extensions(f, verbose)
-    if extension_pic and not extensionStates["ED-PIC"] :
+    if force_extension_pic and not extensionStates["ED-PIC"] :
         print("Error: Extension `ED-PIC` not found in file!")
         result_array += np.array([1, 0])
 
