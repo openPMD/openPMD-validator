@@ -24,7 +24,7 @@ import sys, getopt, os.path
 
 openPMD = "1.0.0"
 
-ext_list = [["ED-PIC", np.uint32(1)]]
+ext_list = {"ED-PIC": np.uint32(1)}
 
 def help():
     """ Print usage information for this file """
@@ -38,7 +38,7 @@ def parse_cmd(argv):
     """ Parse the command line arguments """
     file_name = ''
     verbose = False
-    extension_pic = False
+    force_extension_pic = False
     try:
         opts, args = getopt.getopt(argv,"hvi:e",["file=","EDPIC"])
     except getopt.GetoptError:
@@ -50,12 +50,13 @@ def parse_cmd(argv):
         elif opt in ("-v", "--verbose"):
             verbose = True
         elif opt in ("--EDPIC"):
-            extension_pic = True
+            force_extension_pic = True
         elif opt in ("-i", "--file"):
             file_name = arg
     if not os.path.isfile(file_name):
+        print("File '%s' not found!" % file_name)
         help()
-    return(file_name, verbose, extension_pic)
+    return(file_name, verbose, force_extension_pic)
 
 
 def open_file(file_name):
@@ -74,7 +75,43 @@ def get_attr(f, name):
         return(True, f.attrs[name])
     else:
         return(False, None)
+        
+def get_extensions(f, v):
+    """
+    Get a dictionary which maps each extension name to a bool whether it is
+    enabled in the file
 
+    Parameters
+    ----------
+    f : an h5py.File or h5py.Group object
+        The object in which to find claimed extensions
+    v : bool
+        Verbose option
+    
+    Returns
+    -------
+    A dictionary {string:bool} where the keys are the extension names and the
+    bool states whether it is enabled or not
+    """
+    valid, extensionIDs = get_attr(f, "openPMDextension")
+    result = {ext: False for ext in ext_list.keys()}
+    if valid:
+        enabledExtMask = 0
+        for extension, bitmask in ext_list.items():
+            # This uses a bitmask to identify activated extensions
+            if (bitmask & extensionIDs) == bitmask:
+                result[extension] = True
+                enabledExtMask |= bitmask
+                if v:
+                    print("Info: Found extension '%s'." % extension)
+        # Mask out the extension bits we have already detected so only
+        # unknown ones are left
+        excessIDs = extensionIDs & ~enabledExtMask
+        if excessIDs:
+            print("Warning: Unknown extension Mask left: %s" % excessIDs)
+    return result
+       
+        
 def test_record(g, r):
     """
     Checks if a record is valid
@@ -90,8 +127,8 @@ def test_record(g, r):
     Returns
     -------
     An array with 2 elements :
-    - The first element is 1 if an error occured, and 0 otherwise
-    - The second element is 0 if a warning arised, and 0 otherwise
+    - The first element is 1 if an error occurred, and 0 otherwise
+    - The second element is 0 if a warning arose, and 0 otherwise
     """
     regEx = re.compile("^\w+$") # Python3 only: re.ASCII
     if regEx.match(r):
@@ -113,7 +150,7 @@ def test_record(g, r):
 def test_key(f, v, request, name):
     """
     Checks whether a key is present. A key can either be
-    a h5py.Group or a h5py.Dataset.
+    a h5py.Group or a h5py.DataSet.
     Returns an error if the key if absent and requested
     Returns a warning if the key if absent and recommended
 
@@ -134,8 +171,8 @@ def test_key(f, v, request, name):
     Returns
     -------
     An array with 2 elements :
-    - The first element is 1 if an error occured, and 0 otherwise
-    - The second element is 0 if a warning arised, and 0 otherwise
+    - The first element is 1 if an error occurred, and 0 otherwise
+    - The second element is 0 if a warning arose, and 0 otherwise
     """
     valid = (name in list(f.keys()))
     if valid:
@@ -165,7 +202,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
     """
     Checks whether an attribute is present.
     Returns an error if the attribute if absent and requested
-    Returns a warning if the attribute if absent and recommanded
+    Returns a warning if the attribute if absent and recommended
 
     Parameters
     ----------
@@ -194,8 +231,8 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
     Returns
     -------
     An array with 2 elements :
-    - The first element is 1 if an error occured, and 0 otherwise
-    - The second element is 0 if a warning arised, and 0 otherwise
+    - The first element is 1 if an error occurred, and 0 otherwise
+    - The second element is 0 if a warning arose, and 0 otherwise
     """
     valid, value = get_attr(f, name)
     if valid:
@@ -271,7 +308,7 @@ def is_scalar_record(r):
 
     Parameters
     ----------
-    r : an h5py.Group or h5py.Dataset object
+    r : an h5py.Group or h5py.DataSet object
         the record that shall be tested
 
     Returns
@@ -298,7 +335,7 @@ def test_component(c, v) :
 
     Parameters
     ----------
-    c : an h5py.Group or h5py.Dataset object
+    c : an h5py.Group or h5py.DataSet object
         the record component that shall be tested
 
     v : bool
@@ -327,7 +364,7 @@ def test_component(c, v) :
     return(result_array)
 
 
-def check_root_attr(f, v, pic):
+def check_root_attr(f, v):
     """
     Scan the root of the file and make sure that all the attributes are present
 
@@ -338,9 +375,6 @@ def check_root_attr(f, v, pic):
         
     v : bool
         Verbose option
-    
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
 
     Returns
     -------
@@ -382,20 +416,10 @@ def check_root_attr(f, v, pic):
     #   optional
     result_array += test_attr(f, v, "optional", "comment", np.string_)
 
-    # Extension: ED-PIC
-    if pic:
-        valid, extensionIDs = get_attr(f, "openPMDextension")
-        if valid:
-            if (ext_list[0][1] & extensionIDs) != extensionIDs:
-                print("Error: ID=%s for extension `%s` not found in " \
-                      "`openPMDextension` (is %s)!" \
-                     %(ext_list[0][1], ext_list[0][0], extensionIDs) )
-                result_array += np.array([1,0])
-
     return(result_array)
 
 
-def check_iterations(f, v, pic) :
+def check_iterations(f, v, extensionStates) :
     """
     Scan all the iterations present in the file, checking both
     the meshes and the particles
@@ -408,8 +432,8 @@ def check_iterations(f, v, pic) :
     v : bool
         Verbose option
     
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary {string:bool}
+        Whether an extension is enabled
 
     Returns
     -------
@@ -446,15 +470,15 @@ def check_iterations(f, v, pic) :
         
     # Loop over the iterations and check the meshes and the particles 
     for iteration in list_iterations :
-        result_array += check_base_path(f, iteration, v, pic)
+        result_array += check_base_path(f, iteration, v, extensionStates)
         # Go deeper only if there is no error at this point
         if result_array[0] == 0 :
-            result_array += check_meshes(f, iteration, v, pic)
-            result_array += check_particles(f, iteration, v, pic)
+            result_array += check_meshes(f, iteration, v, extensionStates)
+            result_array += check_particles(f, iteration, v, extensionStates)
 
     return(result_array)
     
-def check_base_path(f, iteration, v, pic):
+def check_base_path(f, iteration, v, extensionStates):
     """
     Scan the base_path that corresponds to this iteration
 
@@ -469,8 +493,8 @@ def check_base_path(f, iteration, v, pic):
     v : bool
         Verbose option
         
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary {string:bool}
+        Whether an extension is enabled
     
     Returns
     -------
@@ -494,7 +518,7 @@ def check_base_path(f, iteration, v, pic):
 
     return(result_array)
     
-def check_meshes(f, iteration, v, pic):
+def check_meshes(f, iteration, v, extensionStates):
     """
     Scan all the meshes corresponding to one iteration
 
@@ -509,8 +533,8 @@ def check_meshes(f, iteration, v, pic):
     v : bool
         Verbose option
         
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary {string:bool}
+        Whether an extension is enabled
     
     Returns
     -------
@@ -593,7 +617,7 @@ def check_meshes(f, iteration, v, pic):
 
     # Check for the attributes of the PIC extension,
     # if asked to do so by the user 
-    if pic and len(list_meshes) > 0:
+    if extensionStates['ED-PIC'] and len(list_meshes) > 0:
         # Check the attributes associated with the field solver
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "fieldSolver", np.string_)
@@ -646,7 +670,7 @@ def check_meshes(f, iteration, v, pic):
     return(result_array)
 
 
-def check_particles(f, iteration, v, pic) :
+def check_particles(f, iteration, v, extensionStates) :
     """
     Scan all the particle data corresponding to one iteration
 
@@ -661,8 +685,8 @@ def check_particles(f, iteration, v, pic) :
     v : bool
         Verbose option
         
-    pic : bool
-        Whether to check for the ED-PIC extension attributes
+    extensionStates : Dictionary {string:bool}
+        Whether an extension is enabled
     
     Returns
     -------
@@ -746,7 +770,7 @@ def check_particles(f, iteration, v, pic) :
                         result_array += test_component(dset_extent, v)
 
         # Check the records required by the PIC extension
-        if pic :
+        if extensionStates['ED-PIC'] :
             result_array += test_key(species, v, "required", "momentum")
             result_array += test_key(species, v, "required", "charge")
             result_array += test_key(species, v, "required", "mass")
@@ -756,7 +780,7 @@ def check_particles(f, iteration, v, pic) :
             result_array += test_key(species, v, "optional", "neutronNumber")
 
         # Check the attributes associated with the PIC extension
-        if pic :
+        if extensionStates['ED-PIC'] :
             result_array += test_attr(species, v, "required",
                                       "particleShape", [np.float32, np.float64])
             result_array += test_attr(species, v, "required",
@@ -783,7 +807,7 @@ def check_particles(f, iteration, v, pic) :
                 time_type = f[base_path].attrs["time"].dtype.type
                 result_array += test_attr(species[record], v, "required",
                                           "timeOffset", time_type)
-                if pic :
+                if extensionStates['ED-PIC'] :
                     result_array += test_attr(species[record], v, "required",
                                               "weightingPower", np.float64)
                     result_array += test_attr(species[record], v, "required",
@@ -802,20 +826,26 @@ def check_particles(f, iteration, v, pic) :
 
     
 if __name__ == "__main__":
-    file_name, verbose, extension_pic = parse_cmd(sys.argv[1:])
+    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
     f = open_file(file_name)
 
     # root attributes at "/"
     result_array = np.array([0, 0])
-    result_array += check_root_attr(f, verbose, extension_pic)
+    result_array += check_root_attr(f, verbose)
+    
+    extensionStates = get_extensions(f, verbose)
+    if force_extension_pic and not extensionStates["ED-PIC"] :
+        print("Error: Extension `ED-PIC` not found in file!")
+        result_array += np.array([1, 0])
 
     # Go through all the iterations, checking both the particles
     # and the meshes
-    result_array += check_iterations(f, verbose, extension_pic)
+    result_array += check_iterations(f, verbose, extensionStates)
 
     # results
     print("Result: %d Errors and %d Warnings."
           %( result_array[0], result_array[1]))
 
-    # return code: non-zero is unix-style for errors occured
+    # return code: non-zero is Unix-style for errors occurred
     sys.exit(int(result_array[0]))
+
