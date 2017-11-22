@@ -540,9 +540,7 @@ def write_particles(f, iteration):
         particlePatches['extent/x'][rank] = grid_layout[0] / mpi_size
 
 
-
-if __name__ == "__main__":
-
+def main():
     # Open an exemple file
     f = h5.File("example.h5", "w")
 
@@ -561,3 +559,7 @@ if __name__ == "__main__":
     # Close the file
     f.close()
     print("File example.h5 created!")
+
+
+if __name__ == "__main__":
+    main()
