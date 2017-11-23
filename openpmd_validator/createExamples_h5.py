@@ -121,7 +121,7 @@ def write_rho_cylindrical(meshes, mode0, mode1):
 
     # Create the dataset (cylindrical with azimuthal modes up to m=1)
     # The first axis has size 2m+1
-    rho.attrs["geometry"] = np.string_("cylindrical")
+    rho.attrs["geometry"] = np.string_("thetaMode")
     rho.attrs["geometryParameters"] = np.string_("m=1; imag=+")
 
     # Add information on the units of the data

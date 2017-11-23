@@ -34,5 +34,6 @@ before_script:
 
 script:
   # execute actual scripts
-  - ./openpmd_validator/createExamples_h5.py
-  - ./openpmd_validator/check_h5.py -i example.h5 --EDPIC
+  - python setup.py install
+  - openPMD_createExamples_h5
+  - openPMD_check_h5 -i example.h5 --EDPIC
