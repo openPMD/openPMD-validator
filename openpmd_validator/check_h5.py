@@ -704,7 +704,7 @@ def check_particles(f, iteration, v, extensionStates) :
     valid, particles_path = get_attr(f, "particlesPath")
     if os.path.join( base_path, particles_path) !=  \
         ( base_path + particles_path ) :
-        print("Error: `basePath`+`meshesPath` seems to be malformed "
+        print("Error: `basePath`+`particlesPath` seems to be malformed "
             "(is `basePath` absolute and ends on a `/` ?)")
         return( np.array([1, 0]) )
     else:
