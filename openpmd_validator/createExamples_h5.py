@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2015, Axel Huebl, Remi Lehe
+# Copyright (c) 2015-2017 Axel Huebl, Remi Lehe
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -19,6 +19,7 @@ import h5py as h5
 import numpy as np
 import datetime
 from dateutil.tz import tzlocal
+
 
 def get_basePath(f, iteration):
     """
