@@ -25,14 +25,15 @@ install:
 before_script:
   # static code analysis
   #   pyflakes: mainly warnings, unused code, etc.
-  - python -m pyflakes .
+  - python -m pyflakes openpmd_validator
   #   flake8: style only, enforce PEP 8
-  # - python -m flake8 .
+  # - python -m flake8 openpmd_validator
   #   Pylint: yet an other linter    
-  # - python -m pylint createExamples_h5.py
-  # - python -m pylint createExamples_h5.py
+  # - python -m pylint openpmd_validator/check_h5.py
+  # - python -m pylint openpmd_validator/createExamples_h5.py
 
 script:
   # execute actual scripts
-  - ./createExamples_h5.py
-  - ./checkOpenPMD_h5.py -i example.h5 --EDPIC
+  - python setup.py install
+  - openPMD_createExamples_h5
+  - openPMD_check_h5 -i example.h5 --EDPIC

@@ -825,7 +825,7 @@ def check_particles(f, iteration, v, extensionStates) :
     return(result_array)
 
     
-if __name__ == "__main__":
+def main():
     file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
     f = open_file(file_name)
 
@@ -849,3 +849,6 @@ if __name__ == "__main__":
     # return code: non-zero is Unix-style for errors occurred
     sys.exit(int(result_array[0]))
 
+
+if __name__ == "__main__":
+    main()
