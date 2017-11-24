@@ -1,7 +1,7 @@
 openPMD Validator Scripts
 =========================
 
-[![Build Status 1.0.*](https://img.shields.io/travis/openPMD/openPMD-validator/1.0.0.svg?label=1.0.*)](https://travis-ci.org/openPMD/openPMD-validator/branches)
+[![Build Status 1.0.*](https://img.shields.io/travis/openPMD/openPMD-validator/1.0.X.svg?label=1.0.*)](https://travis-ci.org/openPMD/openPMD-validator/branches)
 
 This repository contains scripts to validate existing files that (claim to)
 implement the [openPMD Standard](https://github.com/openPMD/openPMD-standard)

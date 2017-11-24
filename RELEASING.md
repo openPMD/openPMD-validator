@@ -32,6 +32,10 @@ username = <yourPypiUsername>
 
 ## Creating a release on Github
 
+- The version number of the tool is `openPMDstandardVersion.patchLevel`, e.g.
+  for the `1.1.0` release of the openPMD standard and the 5th release of the
+  validator scripts: `1.1.0.5`
+
 - Make sure that the version number in `setup.cfg`, `conda_recipe/meta.yaml`,
   `README.md`, `checkOpenPMD*.py` **and** in `createExamples*.py` correspond to
   the new release, and that the corresponding changes have been documented in
@@ -39,7 +43,10 @@ username = <yourPypiUsername>
 
 - Be aware that releases are maintained per branch.
 
+- Create a GPG signed tag for a new version via `git tag -s` and push it to GitHub.
+
 - Create a new release through the graphical interface on Github.
+  Important: select the tag you uploaded for it!
 
 ## Uploading the package to PyPI
 
