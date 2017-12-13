@@ -1,10 +1,11 @@
 # openPMD Validator Scripts
 
 [![Build Status 1.0.*](https://img.shields.io/travis/openPMD/openPMD-validator/1.0.X.svg?label=1.0.*)](https://travis-ci.org/openPMD/openPMD-validator/branches)
-[![pypi version](https://img.shields.io/pypi/v/openPMD-validator.svg)](https://pypi.python.org/pypi/openPMD-validator)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/openPMD-validator.svg)
-[![Conda Package](https://img.shields.io/badge/conda-openpmd_validator-brightgreen.svg)](https://anaconda.org/ax3l/openpmd_validator)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+
+[![pypi version](https://img.shields.io/pypi/v/openPMD-validator.svg)](https://pypi.python.org/pypi/openPMD-validator)
+[![Conda Package](https://anaconda.org/ax3l/openpmd_validator/badges/version.svg)](https://anaconda.org/ax3l/openpmd_validator)
 
 This repository contains scripts to validate existing files that (claim to)
 implement the [openPMD Standard](https://github.com/openPMD/openPMD-standard)
