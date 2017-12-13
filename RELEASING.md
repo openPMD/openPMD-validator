@@ -54,7 +54,7 @@ username = <yourPypiUsername>
 rm -rf dist
 python2 setup.py sdist bdist_wheel
 python3 setup.py sdist bdist_wheel
-twine upload dist/* -r pypi
+twine upload -s dist/* -r pypi
 ```
 (NB: You can also first test this by uploading the package to
 [test PyPI](https://testpypi.python.org/pypi) ; to do so, simply
