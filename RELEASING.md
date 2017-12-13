@@ -13,7 +13,7 @@ PyPI and conda. In particular:
 [`twine`](https://pypi.python.org/pypi/twine), [`pbr`](https://pypi.python.org/pypi/pbr)
 - you should have a registered account on [PyPI](https://pypi.python.org/pypi) and [test PyPI](https://testpypi.python.org/pypi), and your `$HOME` should contain a file `.pypirc` which contains the following text:
 
- ```
+```
 [distutils]
 index-servers=
     pypitest
@@ -24,7 +24,6 @@ repository = https://testpypi.python.org/pypi
 username = <yourPypiUsername>
 
 [pypi]
-repository = https://pypi.python.org/pypi
 username = <yourPypiUsername>
 ```
 
@@ -51,9 +50,10 @@ username = <yourPypiUsername>
 ## Uploading the package to PyPI
 
 - Upload the package to [PyPI](https://pypi.python.org/pypi):
-```
+```bash
 rm -rf dist
-python setup.py sdist bdist_wheel
+python2 setup.py sdist bdist_wheel
+python3 setup.py sdist bdist_wheel
 twine upload dist/* -r pypi
 ```
 (NB: You can also first test this by uploading the package to
@@ -65,17 +65,27 @@ replace `pypi` by `pypitest` in the above set of commands)
 - `cd` into the folder `conda_recipe`.
 
 - Still in the folder `conda_recipe`, run
-```
+```bash
 docker build -t openpmd_validator_build .
-docker run -it -v $PWD:/home/ openpmd_validator_build
+
+# remove old files if present
+rm -rf linux-64 linux-ppc64le osx-64 win-64
+
+pfs="linux-64 osx-64 linux-ppc64le win-64"
+for p in $pfs; do \
+  docker run --rm -it -v $PWD:/home/ -e platform=$p openpmd_validator_build; \
+done
 ```
 This builds the conda packages for Python 2.7, 3.4, 3.5 and 3.6, using a
 reproduceable environment.
 
-- After the build, the Docker container will **not** exit. From the container, type the following commands:
-```
-anaconda login
-anaconda upload osx-64/*
-anaconda upload /opt/conda/conda-bld/linux-64/openpmd_validator*
-```
+- After the build, start the container again and upload with the following commands:
+```bash
+docker run -it -v $PWD:/home/ openpmd_validator_build /bin/bash
 
+anaconda login
+anaconda upload /home/osx-64/*
+anaconda upload /home/linux-64/*
+anaconda upload /home/linux-ppc64le/*
+anaconda upload /home/win-64/*
+```

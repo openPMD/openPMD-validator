@@ -1,0 +1,10 @@
+# setuptools
+build/
+dist/
+*.egg-info/
+
+# conda
+conda_recipe/linux-64/
+conda_recipe/linux-ppc64le/
+conda_recipe/osx-64/
+conda_recipe/win-64/
