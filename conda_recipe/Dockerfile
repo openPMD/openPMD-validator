@@ -20,6 +20,6 @@ CMD /bin/echo "Building for $platform" \
     && if test "$platform" = "linux-64"; then \
       cp -R /opt/conda/conda-bld/linux-64/openpmd_validator* $platform/ ; \
     fi \
-    && find $platform/ -name "*.tar.bz2" -type f -exec chmod a+w {} \;
+    && chmod a+w -R $platform
 
 

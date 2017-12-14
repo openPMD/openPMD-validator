@@ -10,7 +10,7 @@ PyPI and conda. In particular:
 
 - you should install the packages
 [`pypandoc`](https://pypi.python.org/pypi/pypandoc/),
-[`twine`](https://pypi.python.org/pypi/twine), [`pbr`](https://pypi.python.org/pypi/pbr)
+[`twine`](https://pypi.python.org/pypi/twine)
 - you should have a registered account on [PyPI](https://pypi.python.org/pypi) and [test PyPI](https://testpypi.python.org/pypi), and your `$HOME` should contain a file `.pypirc` which contains the following text:
 
 ```
