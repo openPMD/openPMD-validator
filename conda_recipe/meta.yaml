@@ -1,0 +1,36 @@
+{% set version = "1.0.0.0" %}
+
+package:
+  name: openpmd_validator
+  version: {{ version }}
+
+source:
+  git_rev: {{ version }}
+  git_url: https://github.com/openPMD/openPMD-validator.git
+
+build:
+  script: python setup.py install
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - python-dateutil
+    - numpy
+    - h5py
+  run:
+    - python
+    - python-dateutil
+    - numpy
+    - h5py
+
+test:
+  imports:
+    - openpmd_validator
+
+about:
+  home: https://github.com/openPMD/openPMD-validator
+  license: ISC
+  license_file: LICENSE.txt
+  summary: "Validator and example scripts for openPMD files"
+

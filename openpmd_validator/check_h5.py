@@ -23,6 +23,7 @@ import collections  # for isinstance
 import sys, getopt, os.path
 
 
+# version of the openPMD standard
 openPMD = "1.0.0"
 
 ext_list = {"ED-PIC": np.uint32(1)}
