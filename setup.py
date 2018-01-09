@@ -13,7 +13,7 @@ def read_readme():
 
 setup(
     name='openPMD-validator',
-    version='1.0.0.0',
+    version='1.0.0.1',
     url='https://github.com/openPMD/openPMD-validator',
     # author=...,  # TODO
     # author_email=...,  # TODO
