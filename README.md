@@ -4,9 +4,6 @@
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/openPMD-validator.svg)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
-[![pypi version](https://img.shields.io/pypi/v/openPMD-validator.svg)](https://pypi.python.org/pypi/openPMD-validator)
-[![Conda Package](https://anaconda.org/ax3l/openpmd_validator/badges/version.svg)](https://anaconda.org/ax3l/openpmd_validator)
-
 This repository contains scripts to validate existing files that (claim to)
 implement the [openPMD Standard](https://github.com/openPMD/openPMD-standard)
 in version `1.0.*`.
@@ -33,6 +30,68 @@ of the openPMD standard. The repository
 also lists a large collection of open source projects that already implement
 the openPMD standard.
 
+
+## Install
+
+[![pypi version](https://img.shields.io/pypi/v/openPMD-validator.svg)](https://pypi.python.org/pypi/openPMD-validator)
+[![Spack Package](https://img.shields.io/badge/spack-notyet-yellow.svg)](https://spack.io)
+[![Conda Package](https://anaconda.org/ax3l/openpmd_validator/badges/version.svg)](https://anaconda.org/ax3l/openpmd_validator)
+
+### PyPI
+
+```bash
+# optional: append --user
+pip install openPMD-validator
+```
+
+### Spack
+
+*soon*
+
+### Conda
+
+```bash
+conda install -c ax3l openpmd_validator
+```
+
+## Usage
+
+### CLI
+
+We provide the command-line tools for individual files:
+
+```bash
+# optional: create dummy example files
+openPMD_createExamples_h5.py
+
+# validate
+openPMD_check_h5 -i example.h5
+#   optional: append --EDPIC for the Partice-in-Cell Extension
+```
+
+### Module
+
+Additionally, the validator tools can be used as *Python module* in your projects, e.g. to verify a file before opening it for reading.
+
+**Create:**
+```python
+from openpmd_validator import createExamples_h5
+
+
+# create "example.h5"
+createExamples_h5.main()
+```
+
+**Check:**
+```python
+from openpmd_validator import check_h5
+
+
+result_array = check_h5.check_file("example.h5", verbose=False)
+
+print("Result: %d Errors and %d Warnings."
+      %( result_array[0], result_array[1]))
+```
 
 ## Development
 

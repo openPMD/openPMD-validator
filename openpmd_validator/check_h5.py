@@ -823,18 +823,17 @@ def check_particles(f, iteration, v, extensionStates) :
                     for component_name in list(species[record].keys()):
                         dset = species[ os.path.join(record, component_name) ]
                         result_array += test_component(dset, v)
-                
+
     return(result_array)
 
-    
-def main():
-    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
+
+def check_file(file_name, verbose=False, force_extension_pic=False):
     f = open_file(file_name)
 
     # root attributes at "/"
     result_array = np.array([0, 0])
     result_array += check_root_attr(f, verbose)
-    
+
     extensionStates = get_extensions(f, verbose)
     if force_extension_pic and not extensionStates["ED-PIC"] :
         print("Error: Extension `ED-PIC` not found in file!")
@@ -843,6 +842,12 @@ def main():
     # Go through all the iterations, checking both the particles
     # and the meshes
     result_array += check_iterations(f, verbose, extensionStates)
+
+    return result_array
+
+
+def main(file_name, verbose=False, force_extension_pic=False):
+    result_array = check_file(file_name, verbose, force_extension_pic)
 
     # results
     print("Result: %d Errors and %d Warnings."
@@ -853,4 +858,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
+    main(file_name, verbose, force_extension_pic)
