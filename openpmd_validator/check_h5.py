@@ -846,7 +846,8 @@ def check_file(file_name, verbose=False, force_extension_pic=False):
     return result_array
 
 
-def main(file_name, verbose=False, force_extension_pic=False):
+def main():
+    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
     result_array = check_file(file_name, verbose, force_extension_pic)
 
     # results
@@ -858,5 +859,4 @@ def main(file_name, verbose=False, force_extension_pic=False):
 
 
 if __name__ == "__main__":
-    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
-    main(file_name, verbose, force_extension_pic)
+    main()
