@@ -37,8 +37,10 @@ username = <yourPypiUsername>
 
 - Make sure that the version number in `setup.cfg`, `conda_recipe/meta.yaml`,
   `README.md`, `checkOpenPMD*.py` **and** in `createExamples*.py` correspond to
-  the new release, and that the corresponding changes have been documented in
-  `CHANGELOG.md`.
+  the new release. Executing the script `newVersion.sh` will update all places
+  for you.
+
+- Document corresponding in `CHANGELOG.md`.
 
 - Be aware that releases are maintained per branch.
 

@@ -41,7 +41,7 @@ the openPMD standard.
 
 ```bash
 # optional: append --user
-pip install openPMD-validator
+pip install openPMD-validator==1.0.0.2
 ```
 
 ### Spack
@@ -51,7 +51,7 @@ pip install openPMD-validator
 ### Conda
 
 ```bash
-conda install -c ax3l openpmd_validator
+conda install -c ax3l openpmd_validator==1.0.0.2
 ```
 
 ## Usage
