@@ -34,8 +34,10 @@ the openPMD standard.
 ## Install
 
 [![pypi version](https://img.shields.io/pypi/v/openPMD-validator.svg)](https://pypi.python.org/pypi/openPMD-validator)
-[![Spack Package](https://img.shields.io/badge/spack-notyet-yellow.svg)](https://spack.io)
+[![Spack Package](https://img.shields.io/badge/spack-py--openpmd--validator-blue.svg)](https://spack.io)
 [![Conda Package](https://anaconda.org/ax3l/openpmd_validator/badges/version.svg)](https://anaconda.org/ax3l/openpmd_validator)
+
+Choose *one* of the install methods below to get started:
 
 ### PyPI
 
@@ -46,12 +48,26 @@ pip install openPMD-validator==1.0.0.2
 
 ### Spack
 
-*soon*
+```bash
+spack install py-openpmd-validator@1.0.0.2 ^py-h5py~mpi
+spack load --dependencies py-openpmd-validator@1.0.0.2 ^py-h5py~mpi
+```
 
 ### Conda
 
 ```bash
 conda install -c ax3l openpmd_validator==1.0.0.2
+```
+
+### From Source
+
+```bash
+wget https://github.com/openPMD/openPMD-validator/archive/1.0.0.2.tar.gz
+tar -xf 1.0.0.2.tar.gz
+cd openPMD-validator-1.0.0.2/
+
+# optional: append --user
+python setup.py install
 ```
 
 ## Usage
@@ -62,7 +78,7 @@ We provide the command-line tools for individual files:
 
 ```bash
 # optional: create dummy example files
-openPMD_createExamples_h5.py
+openPMD_createExamples_h5
 
 # validate
 openPMD_check_h5 -i example.h5

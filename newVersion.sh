@@ -83,22 +83,33 @@ fi
 
 # Updates #####################################################################
 
+# regex for a 4 digit version number
+regv="\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)"
+
 # setup files
 #   setuptools
 sed -i "s/"\
-"\(.*version='\)\(.\+\)\('.*\)/"\
+"\(.*version='\)"$regv"\('.*\)/"\
 "\1"$VERSION_STR"\3/" \
     $REPO_DIR/setup.py
 #   conda
 sed -i 's/'\
-'\({% set version = "\)\(.\+\)\(".*\)/'\
+'\({% set version = "\)'$regv'\(".*\)/'\
 '\1'$VERSION_STR'\3/' \
     $REPO_DIR/conda_recipe/meta.yaml
 
 # documentation
 sed -i 's/'\
-'\(.*validator==\)\(.\+\)/'\
-'\1'$VERSION_STR'/' \
+'\(.*validator==\)'$regv'\(.*\)/'\
+'\1'$VERSION_STR'\3/' \
+    $REPO_DIR/README.md
+sed -i 's/'\
+'\(.*validator[@-]\)'$regv'\(.*\)/'\
+'\1'$VERSION_STR'\3/' \
+    $REPO_DIR/README.md
+sed -i 's/'\
+'\(.*\)'$regv'\(\.tar\.gz\)/'\
+'\1'$VERSION_STR'\3/' \
     $REPO_DIR/README.md
 
 # Epilog ######################################################################
