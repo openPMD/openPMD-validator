@@ -416,6 +416,8 @@ def check_root_attr(f, v):
       "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [\+|-][0-9]{4}$")
 
     #   optional
+    result_array += test_attr(f, v, "optional", "softwareDependencies", np.string_)
+    result_array += test_attr(f, v, "optional", "machine", np.string_)
     result_array += test_attr(f, v, "optional", "comment", np.string_)
 
     return(result_array)

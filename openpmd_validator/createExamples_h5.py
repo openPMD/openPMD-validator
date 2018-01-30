@@ -19,6 +19,8 @@ import h5py as h5
 import numpy as np
 import datetime
 from dateutil.tz import tzlocal
+import sys
+import socket
 
 
 def get_basePath(f, iteration):
@@ -60,6 +62,22 @@ def setup_base_path(f, iteration):
     bp.attrs["dt"] = 0.5   # Value expressed in femtoseconds
     bp.attrs["timeUnitSI"] = np.float64(1.e-15) # Conversion factor
 
+def get_software_dependencies():
+    """
+    Returns the software dependencies of this script as a semicolon
+    separated string.
+    """
+    return np.string_(
+        "python@{0}.{1}.{2};".format(
+            sys.version_info.major,
+            sys.version_info.minor,
+            sys.version_info.micro
+        ) +
+        "numpy@{0};".format( np.__version__ ) +
+        "hdf5@{0};".format( h5.version.hdf5_version ) +
+        "h5py@{0}".format( h5.__version__)
+    )
+
 def setup_root_attr(f):
     """
     Write the root metadata for this file
@@ -86,6 +104,8 @@ def setup_root_attr(f):
     f.attrs["author"] = np.string_("Axel Huebl <a.huebl@hzdr.de>")
     f.attrs["software"] = np.string_("openPMD Example Script")
     f.attrs["softwareVersion"] = np.string_("1.0.0")
+    f.attrs["softwareDependencies"] = get_software_dependencies()
+    f.attrs["machine"] = np.string_(socket.gethostname())
     f.attrs["date"] = np.string_(
         datetime.datetime.now(tzlocal()).strftime('%Y-%m-%d %H:%M:%S %z'))
 
