@@ -554,12 +554,13 @@ def check_meshes(f, iteration, v, extensionStates):
     # Find the path to the data
     base_path = "/data/%s/" % iteration
     valid, meshes_path = get_attr(f, "meshesPath")
-    if not valid and v:
-        print("`meshesPath` attribute is missing in '/' "
-              "(will not search for mesh records)")
-        meshes_path = None
-    else:
+    if valid:
         meshes_path = meshes_path.decode()
+    else:
+        meshes_path = None
+        if v:
+            print("`meshesPath` attribute is missing in '/' "
+                  "(will not search for mesh records)")
 
     if meshes_path:
         if os.path.join( base_path, meshes_path) != ( base_path + meshes_path ):
@@ -717,12 +718,13 @@ def check_particles(f, iteration, v, extensionStates) :
     base_path = "/data/%s/" % iteration
     valid, particles_path = get_attr(f, "particlesPath")
 
-    if not valid and v:
-        print("`particlesPath` attribute is missing in '/' "
-              "(will not search for particle records)")
-        particles_path = None
-    else:
+    if valid:
         particles_path = particles_path.decode()
+    else:
+        particles_path = None
+        if v:
+            print("`particlesPath` attribute is missing in '/' "
+                  "(will not search for particle records)")
 
     if particles_path:
         if os.path.join( base_path, particles_path) !=  \
