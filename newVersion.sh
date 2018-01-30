@@ -98,6 +98,13 @@ sed -i 's/'\
 '\1'$VERSION_STR'\3/' \
     $REPO_DIR/conda_recipe/meta.yaml
 
+# example creator scripts
+#   hdf5
+sed -i 's/'\
+'\("softwareVersion".*\)'$regv'\(")\)/'\
+'\1'$VERSION_STR'\3/' \
+    $REPO_DIR/openpmd_validator/createExamples_h5.py
+
 # documentation
 sed -i 's/'\
 '\(.*validator==\)'$regv'\(.*\)/'\
