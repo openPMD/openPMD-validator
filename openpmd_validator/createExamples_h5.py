@@ -74,7 +74,7 @@ def setup_root_attr(f):
     ext_list = [["ED-PIC", np.uint32(1)]]
 
     # Required attributes
-    f.attrs["openPMD"] = np.string_("1.0.0")
+    f.attrs["openPMD"] = np.string_("1.1.0")
     f.attrs["openPMDextension"] = ext_list[0][1] # ED-PIC extension is used
     f.attrs["basePath"] = np.string_("/data/%T/")
     f.attrs["meshesPath"] = np.string_("meshes/")

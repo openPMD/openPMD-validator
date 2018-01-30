@@ -1,12 +1,12 @@
 # openPMD Validator Scripts
 
-[![Build Status 1.0.*](https://img.shields.io/travis/openPMD/openPMD-validator/1.0.X.svg?label=1.0.*)](https://travis-ci.org/openPMD/openPMD-validator/branches)
+[![Build Status 1.1.X](https://img.shields.io/travis/openPMD/openPMD-validator/1.1.X.svg?label=1.1.X)](https://travis-ci.org/openPMD/openPMD-validator/branches)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/openPMD-validator.svg)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 This repository contains scripts to validate existing files that (claim to)
 implement the [openPMD Standard](https://github.com/openPMD/openPMD-standard)
-in version `1.0.*`.
+in version `1.1.*`.
 
 Additional scripts to create random/empty files with the valid markup of the
 standard are also provided.
@@ -24,7 +24,7 @@ standard.
 
 For more information on requirements for implementations, please refer to the
 section
-[*Implementations*](https://github.com/openPMD/openPMD-standard/blob/1.0.0/STANDARD.md#implementations)
+[*Implementations*](https://github.com/openPMD/openPMD-standard/blob/1.1.0/STANDARD.md#implementations)
 of the openPMD standard. The repository
   [openPMD-projects](https://github.com/openPMD/openPMD-projects)
 also lists a large collection of open source projects that already implement

@@ -24,7 +24,7 @@ import sys, getopt, os.path
 
 
 # version of the openPMD standard
-openPMD = "1.0.0"
+openPMD = "1.1.0"
 
 ext_list = {"ED-PIC": np.uint32(1)}
 
