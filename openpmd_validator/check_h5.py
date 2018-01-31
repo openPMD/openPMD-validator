@@ -394,10 +394,12 @@ def check_root_attr(f, v):
     result_array += test_attr(f, v, "required", "openPMD", np.string_, "^[0-9]+\.[0-9]+\.[0-9]+$")
     result_array += test_attr(f, v, "required", "openPMDextension", np.uint32)
     result_array += test_attr(f, v, "required", "basePath", np.string_, "^\/data\/\%T\/$")
-    result_array += test_attr(f, v, "required", "meshesPath", np.string_)
-    result_array += test_attr(f, v, "required", "particlesPath", np.string_)
     result_array += test_attr(f, v, "required", "iterationEncoding", np.string_, "^groupBased|fileBased$")
     result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
+
+    #   optional but required for data
+    result_array += test_attr(f, v, "optional", "meshesPath", np.string_)
+    result_array += test_attr(f, v, "optional", "particlesPath", np.string_)
 
     # groupBased iteration encoding needs to match basePath
     if result_array[0] == 0 :
@@ -550,35 +552,43 @@ def check_meshes(f, iteration, v, extensionStates):
     # First element : number of errors
     # Second element : number of warnings
     result_array = np.array([ 0, 0]) 
-    
+
     # Find the path to the data
     base_path = "/data/%s/" % iteration
     valid, meshes_path = get_attr(f, "meshesPath")
-    if not valid :
-        print("Error: `meshesPath` is missing or malformed in '/'")
-        return( np.array([1, 0]) )
-    meshes_path = meshes_path.decode()
-
-    if os.path.join( base_path, meshes_path) != ( base_path + meshes_path ):
-        print("Error: `basePath`+`meshesPath` seems to be malformed "
-            "(is `basePath` absolute and ends on a `/` ?)")
-        return( np.array([1, 0]) )
+    if valid:
+        meshes_path = meshes_path.decode()
     else:
-        full_meshes_path = (base_path + meshes_path).encode('ascii')
-        # Find all the meshes
-        try:
+        meshes_path = None
+        if v:
+            print("`meshesPath` attribute is missing in '/' "
+                  "(will not search for mesh records)")
+
+    if meshes_path:
+        if os.path.join( base_path, meshes_path) != ( base_path + meshes_path ):
+            print("Error: `basePath`+`meshesPath` seems to be malformed "
+                "(is `basePath` absolute and ends on a `/` ?)")
+            return( np.array([1, 0]) )
+        else:
+            full_meshes_path = (base_path + meshes_path).encode('ascii')
+            # if set, a directory must exist with this name
+            if not full_meshes_path in f:
+                print("Error: `basePath`+`meshesPath` are set but path '{0}' "
+                      "does not exist in file!".format(full_meshes_path))
+                return( np.array([1, 0]) )
+            # Find all the meshes
             list_meshes = list(f[full_meshes_path].keys())
-        except KeyError:
-            list_meshes = []
-    print( "Iteration %s : found %d meshes"
-        %( iteration, len(list_meshes) ) )
+        print( "Iteration %s : found %d meshes"
+            %( iteration, len(list_meshes) ) )
+    else:
+        list_meshes = []
 
     # Check for the attributes of the STANDARD.md
     for field_name in list_meshes :
         field = f[full_meshes_path + field_name.encode('ascii')]
 
         result_array += test_record(f[full_meshes_path], field_name)
-        
+
         # General attributes of the record
         result_array += test_attr(field, v, "required",
                                   "unitDimension", np.ndarray, np.float64)
@@ -704,27 +714,43 @@ def check_particles(f, iteration, v, extensionStates) :
     result_array = np.array([ 0, 0]) 
 
     # Find the path to the data
-    base_path = ("/data/%s/" % iteration).encode('ascii')
+    base_path = "/data/%s/" % iteration
     valid, particles_path = get_attr(f, "particlesPath")
-    if os.path.join( base_path, particles_path) !=  \
-        ( base_path + particles_path ) :
-        print("Error: `basePath`+`particlesPath` seems to be malformed "
-            "(is `basePath` absolute and ends on a `/` ?)")
-        return( np.array([1, 0]) )
+
+    if valid:
+        particles_path = particles_path.decode()
     else:
-        full_particle_path = base_path + particles_path
-        # Find all the particle species
-        try:
+        particles_path = None
+        if v:
+            print("`particlesPath` attribute is missing in '/' "
+                  "(will not search for particle records)")
+
+    if particles_path:
+        if os.path.join( base_path, particles_path) !=  \
+            ( base_path + particles_path ) :
+            print("Error: `basePath`+`particlesPath` seems to be malformed "
+                "(is `basePath` absolute and ends on a `/` ?)")
+            return(np.array([1, 0]))
+        else:
+            full_particle_path = (base_path + particles_path).encode('ascii')
+            # if set, a directory must exist with this name
+            if not full_particle_path in f:
+                print("Error: `basePath`+`particlesPath` are set but path "
+                      "'{0}' does not exist in file!".format(
+                      full_particle_path))
+                return(np.array([1, 0]))
+            # Find all the particle species
             list_species = list(f[full_particle_path].keys())
-        except KeyError:
-            list_species = []
+    else:
+        list_species = []
+
     print( "Iteration %s : found %d particle species"
         %( iteration, len(list_species) ) )
 
     # Go through all the particle species
     for species_name in list_species :
         species = f[full_particle_path + species_name.encode('ascii')]
-        
+
         # Check all records for this species
         for species_record_name in species :
             result_array += test_record(species, species_record_name)
