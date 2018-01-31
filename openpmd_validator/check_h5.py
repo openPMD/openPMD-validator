@@ -575,10 +575,7 @@ def check_meshes(f, iteration, v, extensionStates):
                       "does not exist in file!".format(full_meshes_path))
                 return( np.array([1, 0]) )
             # Find all the meshes
-            try:
-                list_meshes = list(f[full_meshes_path].keys())
-            except KeyError:
-                list_meshes = []
+            list_meshes = list(f[full_meshes_path].keys())
         print( "Iteration %s : found %d meshes"
             %( iteration, len(list_meshes) ) )
     else:
@@ -741,10 +738,7 @@ def check_particles(f, iteration, v, extensionStates) :
                       full_particle_path))
                 return(np.array([1, 0]))
             # Find all the particle species
-            try:
-                list_species = list(f[full_particle_path].keys())
-            except KeyError:
-                list_species = []
+            list_species = list(f[full_particle_path].keys())
     else:
         list_species = []
 
@@ -754,7 +748,7 @@ def check_particles(f, iteration, v, extensionStates) :
     # Go through all the particle species
     for species_name in list_species :
         species = f[full_particle_path + species_name.encode('ascii')]
-        
+
         # Check all records for this species
         for species_record_name in species :
             result_array += test_record(species, species_record_name)
