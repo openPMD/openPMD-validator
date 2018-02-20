@@ -26,7 +26,7 @@ import sys, getopt, os.path
 # version of the openPMD standard
 openPMD = "2.0.0"
 
-ext_list = {"ED-PIC": np.uint32(1)}
+ext_list = ["ED-PIC"]
 
 def help():
     """ Print usage information for this file """
@@ -77,7 +77,7 @@ def get_attr(f, name):
         return(True, f.attrs[name])
     else:
         return(False, None)
-        
+
 def get_extensions(f, v):
     """
     Get a dictionary which maps each extension name to a bool whether it is
@@ -89,31 +89,26 @@ def get_extensions(f, v):
         The object in which to find claimed extensions
     v : bool
         Verbose option
-    
+
     Returns
     -------
     A dictionary {string:bool} where the keys are the extension names and the
     bool states whether it is enabled or not
     """
-    valid, extensionIDs = get_attr(f, "openPMDextension")
-    result = {ext: False for ext in ext_list.keys()}
+    valid, extensions = get_attr(f, "openPMDextension")
+    result = {ext: False for ext in ext_list}
     if valid:
-        enabledExtMask = 0
-        for extension, bitmask in ext_list.items():
-            # This uses a bitmask to identify activated extensions
-            if (bitmask & extensionIDs) == bitmask:
-                result[extension] = True
-                enabledExtMask |= bitmask
+        file_list = extensions.decode().split(";")
+        for e in file_list:
+            if e in ext_list:
+                result[e] = True
                 if v:
-                    print("Info: Found extension '%s'." % extension)
-        # Mask out the extension bits we have already detected so only
-        # unknown ones are left
-        excessIDs = extensionIDs & ~enabledExtMask
-        if excessIDs:
-            print("Warning: Unknown extension Mask left: %s" % excessIDs)
+                    print("Info: Found extension '%s'." % e)
+            else:
+                print("Warning: Unknown extension: %s" % e)
     return result
-       
-        
+
+
 def test_record(g, r):
     """
     Checks if a record is valid
@@ -374,7 +369,7 @@ def check_root_attr(f, v):
     ----------
     f : an h5py.File object
         The HDF5 file in which to find the attribute
-        
+
     v : bool
         Verbose option
 
@@ -388,15 +383,16 @@ def check_root_attr(f, v):
     # First element : number of errors
     # Second element : number of warnings
     result_array = np.array([0,0])
-    
+
     # STANDARD.md
     #   required
     result_array += test_attr(f, v, "required", "openPMD", np.string_, "^[0-9]+\.[0-9]+\.[0-9]+$")
-    result_array += test_attr(f, v, "required", "openPMDextension", np.uint32)
     result_array += test_attr(f, v, "required", "basePath", np.string_, "^\/data\/\%T\/$")
     result_array += test_attr(f, v, "required", "iterationEncoding", np.string_, "^groupBased|fileBased$")
     result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
 
+    #   optional but required for extensions
+    result_array += test_attr(f, v, "optional", "openPMDextension", np.string_, "^[a-zA-Z0-9-;]+$")
     #   optional but required for data
     result_array += test_attr(f, v, "optional", "meshesPath", np.string_)
     result_array += test_attr(f, v, "optional", "particlesPath", np.string_)
