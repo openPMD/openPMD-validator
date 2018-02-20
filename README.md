@@ -2,6 +2,7 @@
 
 [![Build Status 2.0.X](https://img.shields.io/travis/openPMD/openPMD-validator/2.0.X.svg?label=2.0.X)](https://travis-ci.org/openPMD/openPMD-validator/branches)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/openPMD-validator.svg)
+![Development Phase](https://img.shields.io/badge/phase-upcoming-yellow.svg)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 This repository contains scripts to validate existing files that (claim to)
