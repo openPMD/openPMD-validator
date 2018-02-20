@@ -1,12 +1,12 @@
 # openPMD Validator Scripts
 
-[![Build Status 1.1.X](https://img.shields.io/travis/openPMD/openPMD-validator/1.1.X.svg?label=1.1.X)](https://travis-ci.org/openPMD/openPMD-validator/branches)
+[![Build Status 2.0.X](https://img.shields.io/travis/openPMD/openPMD-validator/2.0.X.svg?label=2.0.X)](https://travis-ci.org/openPMD/openPMD-validator/branches)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/openPMD-validator.svg)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 This repository contains scripts to validate existing files that (claim to)
 implement the [openPMD Standard](https://github.com/openPMD/openPMD-standard)
-in version `1.1.*`.
+in version `2.0.*`.
 
 Additional scripts to create random/empty files with the valid markup of the
 standard are also provided.
@@ -24,7 +24,7 @@ standard.
 
 For more information on requirements for implementations, please refer to the
 section
-[*Implementations*](https://github.com/openPMD/openPMD-standard/blob/1.1.0/STANDARD.md#implementations)
+[*Implementations*](https://github.com/openPMD/openPMD-standard/blob/2.0.0/STANDARD.md#implementations)
 of the openPMD standard. The repository
   [openPMD-projects](https://github.com/openPMD/openPMD-projects)
 also lists a large collection of open source projects that already implement
@@ -43,28 +43,28 @@ Choose *one* of the install methods below to get started:
 
 ```bash
 # optional: append --user
-pip install openPMD-validator==1.1.0.1
+pip install openPMD-validator==2.0.0.0
 ```
 
 ### Spack
 
 ```bash
-spack install py-openpmd-validator@1.1.0.1 ^py-h5py~mpi
-spack load --dependencies py-openpmd-validator@1.1.0.1 ^py-h5py~mpi
+spack install py-openpmd-validator@2.0.0.0 ^py-h5py~mpi
+spack load --dependencies py-openpmd-validator@2.0.0.0 ^py-h5py~mpi
 ```
 
 ### Conda
 
 ```bash
-conda install -c ax3l openpmd_validator==1.1.0.1
+conda install -c ax3l openpmd_validator==2.0.0.0
 ```
 
 ### From Source
 
 ```bash
-wget https://github.com/openPMD/openPMD-validator/archive/1.1.0.1.tar.gz
-tar -xf 1.1.0.1.tar.gz
-cd openPMD-validator-1.1.0.1/
+wget https://github.com/openPMD/openPMD-validator/archive/2.0.0.0.tar.gz
+tar -xf 2.0.0.0.tar.gz
+cd openPMD-validator-2.0.0.0/
 
 # optional: append --user
 python setup.py install
