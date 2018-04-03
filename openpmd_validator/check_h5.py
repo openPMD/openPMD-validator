@@ -361,7 +361,7 @@ def test_component(c, v) :
         result_array += test_attr(c, v, "required", "shape", np.ndarray, np.uint64)
 
     # default attributes for all components
-    result_array += test_attr(c, v, "required", "unitSI", np.float64)
+    result_array += test_attr(c, v, "recommended", "unitSI", np.float64)
 
     return(result_array)
 
@@ -374,7 +374,7 @@ def check_root_attr(f, v):
     ----------
     f : an h5py.File object
         The HDF5 file in which to find the attribute
-        
+
     v : bool
         Verbose option
 
@@ -520,7 +520,7 @@ def check_base_path(f, iteration, v, extensionStates):
     # Check for the attributes of the STANDARD.md
     result_array += test_attr(bp, v, "required", "time", [np.float32, np.float64])
     result_array += test_attr(bp, v, "required", "dt", [np.float32, np.float64])
-    result_array += test_attr(bp, v, "required", "timeUnitSI", np.float64)
+    result_array += test_attr(bp, v, "recommended", "timeUnitSI", np.float64)
 
     return(result_array)
     
@@ -598,7 +598,7 @@ def check_meshes(f, iteration, v, extensionStates):
                                   "gridSpacing", np.ndarray, [np.float32, np.float64])
         result_array += test_attr(field, v, "required",
                                   "gridGlobalOffset", np.ndarray, [np.float32, np.float64])
-        result_array += test_attr(field, v, "required",
+        result_array += test_attr(field, v, "recommended",
                                   "gridUnitSI", np.float64)
         result_array += test_attr(field, v, "required",
                                   "dataOrder", np.string_)
@@ -615,7 +615,7 @@ def check_meshes(f, iteration, v, extensionStates):
         else :
             result_array += test_attr(field, v, "optional",
                                             "geometryParameters", np.string_)
-         
+
         # Attributes of the record's components
         if is_scalar_record(field) :   # If the record is a scalar field
             result_array += test_component(field, v)
