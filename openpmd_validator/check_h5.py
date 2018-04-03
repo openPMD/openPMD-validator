@@ -397,7 +397,9 @@ def check_root_attr(f, v):
     result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
 
     #   optional but required for extensions
-    result_array += test_attr(f, v, "optional", "openPMDextension", np.string_, "^[a-zA-Z0-9\-;]+$")
+    result_array += test_attr(f, v, "optional", "openPMDextension", np.string_,
+                              # allowed are a-Z 0-9 - ; (but no spaces!)
+                              "^[a-zA-Z0-9\-;]+$")
     #   optional but required for data
     result_array += test_attr(f, v, "optional", "meshesPath", np.string_)
     result_array += test_attr(f, v, "optional", "particlesPath", np.string_)
@@ -688,6 +690,7 @@ def check_meshes(f, iteration, v, extensionStates):
         # Check for the attributes of each record
         for field_name in list_meshes :
             field = f[full_meshes_path + field_name.encode('ascii')]
+            # allowed are a-Z 0-9 - ; : (but no spaces!)
             result_array += test_attr(field, v, "optional",
                                       "speciesType", np.string_,
                                       "^[a-zA-Z0-9\-;:]+$")
@@ -841,6 +844,7 @@ def check_particles(f, iteration, v, extensionStates) :
 
         # Check the attributes associated with the SpeciesType extension
         if extensionStates['SpeciesType'] :
+            # allowed are a-Z 0-9 - ; : (but no spaces!)
             result_array += test_attr(species, v, "optional", "speciesType",
                                       np.string_, "^[a-zA-Z0-9\-;:]+$")
 
