@@ -92,7 +92,7 @@ def setup_root_attr(f):
     ext_list = [["ED-PIC", np.uint32(1)]]
 
     # Required attributes
-    f.attrs["openPMD"] = np.string_("1.1.0")
+    f.attrs["openPMD"] = np.string_("2.0.0")
     f.attrs["openPMDextension"] = ext_list[0][1] # ED-PIC extension is used
     f.attrs["basePath"] = np.string_("/data/%T/")
     f.attrs["meshesPath"] = np.string_("meshes/")
@@ -103,7 +103,7 @@ def setup_root_attr(f):
     # Recommended attributes
     f.attrs["author"] = np.string_("Axel Huebl <a.huebl@hzdr.de>")
     f.attrs["software"] = np.string_("openPMD Example Script")
-    f.attrs["softwareVersion"] = np.string_("1.1.0.1")
+    f.attrs["softwareVersion"] = np.string_("2.0.0.0")
     f.attrs["softwareDependencies"] = get_software_dependencies()
     f.attrs["machine"] = np.string_(socket.gethostname())
     f.attrs["date"] = np.string_(
