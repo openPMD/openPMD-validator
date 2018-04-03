@@ -160,7 +160,10 @@ def write_rho_cylindrical(meshes, mode0, mode1):
     rho.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)  # dr, dz
     rho.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
     rho.attrs["position"] = np.array([0.0, 0.0], dtype=np.float32)
-    rho.attrs["gridUnitSI"] = np.float64(1.0)
+    rho.attrs["gridUnitSI"] = np.array([1.0, 1.0], dtype=np.float64)
+    rho.attrs["gridUnitDimension"] = \
+        np.array( [1.,0.,0.,0.,0.,0.,0.,
+                   1.,0.,0.,0.,0.,0.,0.], dtype=np.float64 )
     rho.attrs["dataOrder"] = np.string_("C")
     rho.attrs["axisLabels"] = np.array([b"r",b"z"])
 
@@ -203,7 +206,10 @@ def write_b_2d_cartesian(meshes, data_ez):
     B.attrs["geometry"] = np.string_("cartesian")
     B.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)   # dx, dy
     B.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
-    B.attrs["gridUnitSI"] = np.float64(1.0)
+    B.attrs["gridUnitSI"] = np.array([1.0, 1.0], dtype=np.float64)
+    B.attrs["gridUnitDimension"] = \
+        np.array( [1.,0.,0.,0.,0.,0.,0.,
+                   1.,0.,0.,0.,0.,0.,0.], dtype=np.float64 )
     B.attrs["dataOrder"] = np.string_("C")
     B.attrs["axisLabels"] = np.array([b"x",b"y"])
     B.attrs["unitDimension"] = \
@@ -265,7 +271,10 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
     E.attrs["geometry"] = np.string_("cartesian")
     E.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)  # dx, dy
     E.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
-    E.attrs["gridUnitSI"] = np.float64(1.0)
+    E.attrs["gridUnitSI"] = np.array([1.0, 1.0], dtype=np.float64 )
+    E.attrs["gridUnitDimension"] = \
+        np.array( [1.,0.,0.,0.,0.,0.,0.,
+                   1.,0.,0.,0.,0.,0.,0.], dtype=np.float64 )
     E.attrs["dataOrder"] = np.string_("C")
     E.attrs["axisLabels"] = np.array([b"x",b"y"])
     E.attrs["unitDimension"] = \
