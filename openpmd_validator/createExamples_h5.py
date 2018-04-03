@@ -88,8 +88,8 @@ def setup_root_attr(f):
         The file in which to write the data
     """
 
-    # extensions list: ED-PIC extension is used
-    ext_list = ["ED-PIC"]
+    # extensions list: ED-PIC and SpeciesType extensions are used
+    ext_list = ["ED-PIC", "SpeciesType"]
 
     # Required attributes
     f.attrs["openPMD"] = np.string_("2.0.0")
@@ -139,6 +139,7 @@ def write_rho_cylindrical(meshes, mode0, mode1):
     rho = meshes[full_rho_path]
     rho.attrs["comment"] = np.string_(
         "Density of electrons in azimuthal decomposition")
+    rho.attrs["speciesType"] = np.string_("electron")
 
     # Create the dataset (cylindrical with azimuthal modes up to m=1)
     # The first axis has size 2m+1
@@ -323,6 +324,7 @@ def add_EDPIC_attr_particles(particle):
                The group of the particle that gets additional attributes.
 
     """
+    particle.attrs["speciesType"] = np.string_("electron")
     particle.attrs["particleShape"] = 3.0
     particle.attrs["currentDeposition"] = np.string_("Esirkepov")
     # particle.attrs["currentDepositionParameters"] = np.string_("")
