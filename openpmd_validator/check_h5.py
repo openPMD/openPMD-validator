@@ -820,8 +820,6 @@ def check_particles(f, iteration, v, extensionStates) :
             result_array += test_key(species, v, "required", "mass")
             result_array += test_key(species, v, "required", "weighting")
             result_array += test_key(species, v, "optional", "boundElectrons")
-            result_array += test_key(species, v, "optional", "protonNumber")
-            result_array += test_key(species, v, "optional", "neutronNumber")
 
         # Check the attributes associated with the PIC extension
         if extensionStates['ED-PIC'] :
