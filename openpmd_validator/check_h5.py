@@ -26,13 +26,14 @@ import sys, getopt, os.path
 # version of the openPMD standard
 openPMD = "2.0.0"
 
-ext_list = ["ED-PIC"]
+ext_list = ["ED-PIC", "SpeciesType"]
 
 def help():
     """ Print usage information for this file """
     print('This is the openPMD file check for HDF5 files.\n')
     print('Check for format version: %s\n' % openPMD)
-    print('Usage:\n  checkOpenPMD_h5.py -i <fileName> [-v] [--EDPIC]')
+    print('Usage:\n  checkOpenPMD_h5.py -i <fileName> [-v] [--EDPIC] '
+          '[--SpeciesType]')
     sys.exit()
 
 
@@ -41,8 +42,10 @@ def parse_cmd(argv):
     file_name = ''
     verbose = False
     force_extension_pic = False
+    force_extension_speciestype = False
     try:
-        opts, args = getopt.getopt(argv,"hvi:e",["file=","EDPIC"])
+        opts, args = getopt.getopt(argv,"hvi:e",
+            ["file=","EDPIC", "SpeciesType"])
     except getopt.GetoptError:
         print('checkOpenPMD_h5.py -i <fileName>')
         sys.exit(2)
@@ -53,12 +56,14 @@ def parse_cmd(argv):
             verbose = True
         elif opt in ("--EDPIC"):
             force_extension_pic = True
+        elif opt in ("--SpeciesType"):
+            force_extension_speciestype = True
         elif opt in ("-i", "--file"):
             file_name = arg
     if not os.path.isfile(file_name):
         print("File '%s' not found!" % file_name)
         help()
-    return(file_name, verbose, force_extension_pic)
+    return file_name, verbose, force_extension_pic, force_extension_speciestype
 
 
 def open_file(file_name):
@@ -392,7 +397,9 @@ def check_root_attr(f, v):
     result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
 
     #   optional but required for extensions
-    result_array += test_attr(f, v, "optional", "openPMDextension", np.string_, "^[a-zA-Z0-9-;]+$")
+    result_array += test_attr(f, v, "optional", "openPMDextension", np.string_,
+                              # allowed are a-Z 0-9 - ; (but no spaces!)
+                              "^[a-zA-Z0-9\-;]+$")
     #   optional but required for data
     result_array += test_attr(f, v, "optional", "meshesPath", np.string_)
     result_array += test_attr(f, v, "optional", "particlesPath", np.string_)
@@ -677,6 +684,17 @@ def check_meshes(f, iteration, v, extensionStates):
             if (valid == True) and (field_smoothing != b"none") :
                 result_array += test_attr(field,v, "required",
                                     "fieldSmoothingParameters", np.string_)
+
+    # Check the attributes in the SpeciesType extension
+    if extensionStates['SpeciesType'] :
+        # Check for the attributes of each record
+        for field_name in list_meshes :
+            field = f[full_meshes_path + field_name.encode('ascii')]
+            # allowed are a-Z 0-9 - ; : (but no spaces!)
+            result_array += test_attr(field, v, "optional",
+                                      "speciesType", np.string_,
+                                      "^[a-zA-Z0-9\-;:]+$")
+
     return(result_array)
 
 
@@ -824,6 +842,12 @@ def check_particles(f, iteration, v, extensionStates) :
                 result_array += test_attr(species, v, "required",
                                 "particleSmoothingParameters", np.string_)
 
+        # Check the attributes associated with the SpeciesType extension
+        if extensionStates['SpeciesType'] :
+            # allowed are a-Z 0-9 - ; : (but no spaces!)
+            result_array += test_attr(species, v, "optional", "speciesType",
+                                      np.string_, "^[a-zA-Z0-9\-;:]+$")
+
         # Check attributes of each record of the particle
         for record in list(species.keys()) :
             # all records (but particlePatches) require units
@@ -851,7 +875,8 @@ def check_particles(f, iteration, v, extensionStates) :
     return(result_array)
 
 
-def check_file(file_name, verbose=False, force_extension_pic=False):
+def check_file(file_name, verbose=False, force_extension_pic=False,
+               force_extension_speciestype=False):
     f = open_file(file_name)
 
     # root attributes at "/"
@@ -862,6 +887,9 @@ def check_file(file_name, verbose=False, force_extension_pic=False):
     if force_extension_pic and not extensionStates["ED-PIC"] :
         print("Error: Extension `ED-PIC` not found in file!")
         result_array += np.array([1, 0])
+    if force_extension_speciestype and not extensionStates["SpeciesType"] :
+        print("Error: Extension `SpeciesType` not found in file!")
+        result_array += np.array([1, 0])
 
     # Go through all the iterations, checking both the particles
     # and the meshes
@@ -871,8 +899,10 @@ def check_file(file_name, verbose=False, force_extension_pic=False):
 
 
 def main():
-    file_name, verbose, force_extension_pic = parse_cmd(sys.argv[1:])
-    result_array = check_file(file_name, verbose, force_extension_pic)
+    file_name, verbose, \
+    force_extension_pic, force_extension_speciestype = parse_cmd(sys.argv[1:])
+    result_array = check_file(file_name, verbose,
+                              force_extension_pic, force_extension_speciestype)
 
     # results
     print("Result: %d Errors and %d Warnings."
