@@ -88,12 +88,12 @@ def setup_root_attr(f):
         The file in which to write the data
     """
 
-    # extensions list
-    ext_list = [["ED-PIC", np.uint32(1)]]
+    # extensions list: ED-PIC extension is used
+    ext_list = ["ED-PIC"]
 
     # Required attributes
     f.attrs["openPMD"] = np.string_("2.0.0")
-    f.attrs["openPMDextension"] = ext_list[0][1] # ED-PIC extension is used
+    f.attrs["openPMDextension"] = np.string_(";".join(ext_list))
     f.attrs["basePath"] = np.string_("/data/%T/")
     f.attrs["meshesPath"] = np.string_("meshes/")
     f.attrs["particlesPath"] = np.string_("particles/")
