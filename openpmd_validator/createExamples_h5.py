@@ -158,12 +158,12 @@ def write_rho_cylindrical(meshes, mode0, mode1):
 
     # Add information on the r-z grid
     rho.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)  # dr, dz
-    rho.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32) 
+    rho.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
     rho.attrs["position"] = np.array([0.0, 0.0], dtype=np.float32)
     rho.attrs["gridUnitSI"] = np.float64(1.0)
     rho.attrs["dataOrder"] = np.string_("C")
     rho.attrs["axisLabels"] = np.array([b"r",b"z"])
-    
+
     # Add specific information for PIC simulations
     add_EDPIC_attr_meshes(rho)
 
@@ -202,7 +202,7 @@ def write_b_2d_cartesian(meshes, data_ez):
     # Write the common metadata for the group
     B.attrs["geometry"] = np.string_("cartesian")
     B.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)   # dx, dy
-    B.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)  
+    B.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
     B.attrs["gridUnitSI"] = np.float64(1.0)
     B.attrs["dataOrder"] = np.string_("C")
     B.attrs["axisLabels"] = np.array([b"x",b"y"])
@@ -264,7 +264,7 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
     # Write the common metadata for the group
     E.attrs["geometry"] = np.string_("cartesian")
     E.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)  # dx, dy
-    E.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)  
+    E.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
     E.attrs["gridUnitSI"] = np.float64(1.0)
     E.attrs["dataOrder"] = np.string_("C")
     E.attrs["axisLabels"] = np.array([b"x",b"y"])
@@ -289,7 +289,7 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
     E["x"].attrs["unitSI"] = np.float64(1.0e9)
     E["y"].attrs["unitSI"] = np.float64(1.0e9)
     E["z"].attrs["unitSI"] = np.float64(1.0e9)
-    
+
     # Fill the array with the field data
     E["x"][:,:] =  data_ex[:,:]
     E["y"][:,:] =  data_ey[:,:]
@@ -436,9 +436,9 @@ def write_particles(f, iteration):
     weighting.attrs["timeOffset"] = 0.
     weighting.attrs["unitSI"] = np.float64(1.0)
     weighting.attrs["unitDimension"] = \
-       np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64) 
+       np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
     # plain floating point number
-       
+
     # Position of each particle
     electrons.create_group(b"position")
     position = electrons["position"]
@@ -489,7 +489,7 @@ def write_particles(f, iteration):
        np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #          L    M     T    I  theta  N    J
        # Dimension of Length per component
-    
+
     # Momentum of each particle
     electrons.create_group(b"momentum")
     momentum = electrons["momentum"]
@@ -500,7 +500,7 @@ def write_particles(f, iteration):
     momentum["x"].attrs["unitSI"] = np.float64(1.60217657e-19)
     momentum["y"].attrs["unitSI"] = np.float64(1.60217657e-19)
     momentum["z"].attrs["unitSI"] = np.float64(1.60217657e-19)
-    
+
     # macroWeighted: True(1) in this example we store the momentum
     #                of the macro particle
     # weightingPower == 1: each underlying particle contributes linearly
@@ -572,7 +572,7 @@ def main():
 
     # Setup basepath
     setup_base_path(f, iteration=0)
-    
+
     # Write the field records
     write_meshes(f, iteration=0)
 
