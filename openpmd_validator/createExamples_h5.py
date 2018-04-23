@@ -269,7 +269,7 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
 
     # Write the common metadata for the group
     E.attrs["geometry"] = np.string_("cartesian")
-    E.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)  # dx, dy
+    E.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32) # dx, dy
     E.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)
     E.attrs["gridUnitSI"] = np.array([1.0, 1.0], dtype=np.float64 )
     E.attrs["gridUnitDimension"] = \
