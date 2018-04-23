@@ -72,7 +72,7 @@ def open_file(file_name):
         return(f)
     else:
         help()
-        
+
 def get_attr(f, name):
     """
     Try to access the path `name` in the file `f`
@@ -160,7 +160,7 @@ def test_key(f, v, request, name):
     ----------
     f : an h5py.File or h5py.Group object
         The object in which to find the key
-        
+
     v : bool
         Verbose option
 
@@ -210,7 +210,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
     ----------
     f : an h5py.File, h5py.Group or h5py.DataSet object
         The object in which to find the key
-        
+
     v : bool
         Verbose option
 
@@ -229,7 +229,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
         Used with is_type to specify numpy ndarray dtypes or a
         base np.string_ format regex. Can be a list of data types
         for ndarrays where at least one data type must match.
-    
+
     Returns
     -------
     An array with 2 elements :
@@ -437,10 +437,10 @@ def check_iterations(f, v, extensionStates) :
     ----------
     f : an h5py.File object
         The HDF5 file in which to find the attribute
-        
+
     v : bool
         Verbose option
-    
+
     extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
 
@@ -462,7 +462,7 @@ def check_iterations(f, v, extensionStates) :
         for iteration in list_iterations :
             for character in iteration : # go through the string
                 if not (character in string.digits) :
-                    format_error = True                    
+                    format_error = True
     # Detect any error and interrupt execution if one is found
     if format_error == True :
         print("Error: it seems that the path of the data within the HDF5 file "
@@ -475,9 +475,9 @@ def check_iterations(f, v, extensionStates) :
     # Initialize the result array
     # First element : number of errors
     # Second element : number of warnings
-    result_array = np.array([ 0, 0]) 
-        
-    # Loop over the iterations and check the meshes and the particles 
+    result_array = np.array([ 0, 0])
+
+    # Loop over the iterations and check the meshes and the particles
     for iteration in list_iterations :
         result_array += check_base_path(f, iteration, v, extensionStates)
         # Go deeper only if there is no error at this point
@@ -486,7 +486,7 @@ def check_iterations(f, v, extensionStates) :
             result_array += check_particles(f, iteration, v, extensionStates)
 
     return(result_array)
-    
+
 def check_base_path(f, iteration, v, extensionStates):
     """
     Scan the base_path that corresponds to this iteration
@@ -498,13 +498,13 @@ def check_base_path(f, iteration, v, extensionStates):
 
     iteration : string representing an integer
         The iteration at which to scan the meshes
-        
+
     v : bool
         Verbose option
-        
+
     extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
-    
+
     Returns
     -------
     An array with 2 elements :
@@ -514,7 +514,7 @@ def check_base_path(f, iteration, v, extensionStates):
     # Initialize the result array
     # First element : number of errors
     # Second element : number of warnings
-    result_array = np.array([ 0, 0])  
+    result_array = np.array([ 0, 0])
 
     # Find the path to the data
     base_path = ("/data/%s/" % iteration).encode('ascii')
@@ -526,7 +526,7 @@ def check_base_path(f, iteration, v, extensionStates):
     result_array += test_attr(bp, v, "recommended", "timeUnitSI", np.float64)
 
     return(result_array)
-    
+
 def check_meshes(f, iteration, v, extensionStates):
     """
     Scan all the meshes corresponding to one iteration
@@ -538,13 +538,13 @@ def check_meshes(f, iteration, v, extensionStates):
 
     iteration : string representing an integer
         The iteration at which to scan the meshes
-        
+
     v : bool
         Verbose option
-        
+
     extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
-    
+
     Returns
     -------
     An array with 2 elements :
@@ -554,7 +554,7 @@ def check_meshes(f, iteration, v, extensionStates):
     # Initialize the result array
     # First element : number of errors
     # Second element : number of warnings
-    result_array = np.array([ 0, 0]) 
+    result_array = np.array([ 0, 0])
 
     # Find the path to the data
     base_path = "/data/%s/" % iteration
@@ -633,7 +633,7 @@ def check_meshes(f, iteration, v, extensionStates):
                                 "required", "position", np.ndarray, [np.float32, np.float64])
 
     # Check for the attributes of the PIC extension,
-    # if asked to do so by the user 
+    # if asked to do so by the user
     if extensionStates['ED-PIC'] and len(list_meshes) > 0:
         # Check the attributes associated with the field solver
         result_array += test_attr(f[full_meshes_path], v, "required",
@@ -666,7 +666,7 @@ def check_meshes(f, iteration, v, extensionStates):
         if (valid == True) and (current_smoothing != b"none") :
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "currentSmoothingParameters", np.string_)
-    
+
         # Check the attributes associated with the charge conservation
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "chargeCorrection", np.string_)
@@ -709,13 +709,13 @@ def check_particles(f, iteration, v, extensionStates) :
 
     iteration : string representing an integer
         The iteration at which to scan the particle data
-        
+
     v : bool
         Verbose option
-        
+
     extensionStates : Dictionary {string:bool}
         Whether an extension is enabled
-    
+
     Returns
     -------
     An array with 2 elements :
@@ -725,7 +725,7 @@ def check_particles(f, iteration, v, extensionStates) :
     # Initialize the result array
     # First element : number of errors
     # Second element : number of warnings
-    result_array = np.array([ 0, 0]) 
+    result_array = np.array([ 0, 0])
 
     # Find the path to the data
     base_path = "/data/%s/" % iteration
