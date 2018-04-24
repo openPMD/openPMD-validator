@@ -165,8 +165,7 @@ def write_rho_cylindrical(meshes, mode0, mode1):
     rho.attrs["gridUnitDimension"] = \
         np.array( [1.,0.,0.,0.,0.,0.,0.,
                    1.,0.,0.,0.,0.,0.,0.], dtype=np.float64 )
-    rho.attrs["dataOrder"] = np.string_("C")
-    rho.attrs["axisLabels"] = np.array([b"r",b"z"])
+    rho.attrs["axisLabels"] = np.array([b"r", b"z"])  # rho[z, r]
 
     # Add specific information for PIC simulations
     add_EDPIC_attr_meshes(rho)
@@ -212,8 +211,7 @@ def write_b_2d_cartesian(meshes, data_ez):
     B.attrs["gridUnitDimension"] = \
         np.array( [1.,0.,0.,0.,0.,0.,0.,
                    1.,0.,0.,0.,0.,0.,0.], dtype=np.float64 )
-    B.attrs["dataOrder"] = np.string_("C")
-    B.attrs["axisLabels"] = np.array([b"x",b"y"])
+    B.attrs["axisLabels"] = np.array([b"x", b"y"])  # B[y, x]
     B.attrs["unitDimension"] = \
        np.array([0.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #          L    M     T     I  theta  N    J
@@ -278,8 +276,7 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
     E.attrs["gridUnitDimension"] = \
         np.array( [1.,0.,0.,0.,0.,0.,0.,
                    1.,0.,0.,0.,0.,0.,0.], dtype=np.float64 )
-    E.attrs["dataOrder"] = np.string_("C")
-    E.attrs["axisLabels"] = np.array([b"x",b"y"])
+    E.attrs["axisLabels"] = np.array([b"x", b"y"])  # E[y, x]
     E.attrs["unitDimension"] = \
        np.array([1.0, 1.0, -3.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
        #          L    M     T     I  theta  N    J
