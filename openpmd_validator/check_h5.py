@@ -602,7 +602,9 @@ def check_meshes(f, iteration, v, extensionStates):
         result_array += test_attr(field, v, "required",
                                   "gridGlobalOffset", np.ndarray, [np.float32, np.float64])
         result_array += test_attr(field, v, "recommended",
-                                  "gridUnitSI", np.float64)
+                                  "gridUnitSI", np.ndarray, np.float64)
+        result_array += test_attr(field, v, "required",
+                                  "gridUnitDimension", np.ndarray, np.float64)
         result_array += test_attr(field, v, "required",
                                   "dataOrder", np.string_)
         result_array += test_attr(field, v, "required",
