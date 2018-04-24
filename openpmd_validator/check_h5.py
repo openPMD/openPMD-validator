@@ -604,6 +604,8 @@ def check_meshes(f, iteration, v, extensionStates):
         result_array += test_attr(field, v, "recommended",
                                   "gridUnitSI", np.ndarray, np.float64)
         result_array += test_attr(field, v, "required",
+                                  "gridUnitDimension", np.ndarray, np.float64)
+        result_array += test_attr(field, v, "required",
                                   "dataOrder", np.string_)
         result_array += test_attr(field, v, "required",
                                   "axisLabels", np.ndarray, np.string_)
