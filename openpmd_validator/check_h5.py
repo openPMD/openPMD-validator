@@ -398,8 +398,8 @@ def check_root_attr(f, v):
     result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
 
     #   optional but required for data
-    result_array += test_attr(f, v, "optional", "meshesPath", np.string_)
-    result_array += test_attr(f, v, "optional", "particlesPath", np.string_)
+    result_array += test_attr(f, v, "optional", "meshesPath", np.string_, "^.*\/$")
+    result_array += test_attr(f, v, "optional", "particlesPath", np.string_, "^.*\/$")
 
     # groupBased iteration encoding needs to match basePath
     if result_array[0] == 0 :
