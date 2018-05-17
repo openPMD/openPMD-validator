@@ -401,8 +401,8 @@ def check_root_attr(f, v):
                               # allowed are a-Z 0-9 - ; (but no spaces!)
                               "^[a-zA-Z0-9\-;]+$")
     #   optional but required for data
-    result_array += test_attr(f, v, "optional", "meshesPath", np.string_)
-    result_array += test_attr(f, v, "optional", "particlesPath", np.string_)
+    result_array += test_attr(f, v, "optional", "meshesPath", np.string_, "^.*\/$")
+    result_array += test_attr(f, v, "optional", "particlesPath", np.string_, "^.*\/$")
 
     # groupBased iteration encoding needs to match basePath
     if result_array[0] == 0 :
