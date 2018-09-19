@@ -834,9 +834,8 @@ def check_particles(f, iteration, v, extensionStates) :
             if record != "particlePatches":
                 result_array += test_attr(species[record], v,
                         "required", "unitDimension", np.ndarray, np.float64)
-                time_type = f[base_path].attrs["time"].dtype.type
                 result_array += test_attr(species[record], v, "required",
-                                          "timeOffset", time_type)
+                                          "timeOffset", [np.float32, np.float64])
                 if extensionStates['ED-PIC'] :
                     result_array += test_attr(species[record], v, "required",
                                               "weightingPower", np.float64)
