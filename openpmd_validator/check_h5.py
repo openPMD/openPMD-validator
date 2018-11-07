@@ -651,14 +651,6 @@ def check_meshes(f, iteration, v, extensionStates):
             result_array += test_attr(f[full_meshes_path], v, "required",
                         "fieldBoundaryParameters", np.ndarray, np.string_)
 
-        # Check for the attributes associated with the field boundaries
-        result_array += test_attr(f[full_meshes_path], v, "required",
-                                "particleBoundary", np.ndarray, np.string_)
-        valid, particle_boundary = get_attr(f[full_meshes_path], "particleBoundary")
-        if (valid == True) and (np.any(particle_boundary == b"other")) :
-            result_array += test_attr(f[full_meshes_path], v, "required",
-                    "particleBoundaryParameters", np.ndarray, np.string_)
-
         # Check the attributes associated with the current smoothing
         result_array += test_attr(f[full_meshes_path], v, "required",
                                   "currentSmoothing", np.string_)
@@ -831,6 +823,14 @@ def check_particles(f, iteration, v, extensionStates) :
                                       "particlePush", np.string_)
             result_array += test_attr(species, v, "required",
                                       "particleInterpolation", np.string_)
+
+            # Check for the attributes associated with the particle boundaries
+            result_array += test_attr(species, v, "required",
+                                    "particleBoundary", np.ndarray, np.string_)
+            valid, particle_boundary = get_attr(species, "particleBoundary")
+            if (valid == True) and (np.any(particle_boundary == b"other")) :
+                result_array += test_attr(species, v, "required",
+                        "particleBoundaryParameters", np.ndarray, np.string_)
 
             # Check for the attributes associated with the particle smoothing
             result_array += test_attr(species, v, "required",
