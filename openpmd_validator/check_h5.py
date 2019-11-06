@@ -250,7 +250,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
                 type_format_names = map(lambda x: x.__name__, type_format)
             if not is_type is None and not isinstance(is_type, collections.Iterable):
                 is_type = [is_type]
-            is_type_names = map(lambda x: x.__name__, is_type)
+            is_type_names = "' or '".join(map(lambda x: str(x.__name__), is_type))
             # add for each type in is_type -> wrong, need to add this at the comparison level!
             if type(value) in is_type:
                 # np.string_ format or general ndarray dtype text
@@ -280,7 +280,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
             else:
                 print(
                  "Error: Attribute %s in `%s` is not of type '%s' (is '%s')!" \
-                 %(name, str(f.name), str(is_type_names), \
+                 %(name, str(f.name), is_type_names, \
                   type(value).__name__) )
                 result_array = np.array([1,0])
         else: # is_type is None (== arbitrary)
