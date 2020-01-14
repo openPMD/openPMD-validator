@@ -19,8 +19,12 @@ import h5py as h5
 import numpy as np
 import re
 import string
-import collections  # for isinstance
 import sys, getopt, os.path
+# for isinstance
+try:
+    from collections.abc import Iterable
+except ImportError:
+    from collections import Iterable
 
 
 # version of the openPMD standard
@@ -245,10 +249,10 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
         # test type
         if is_type is not None:
             if not type_format is None and not is_type is np.string_ and \
-               not isinstance(type_format, collections.Iterable):
+               not isinstance(type_format, Iterable):
                 type_format = [type_format]
                 type_format_names = map(lambda x: x.__name__, type_format)
-            if not is_type is None and not isinstance(is_type, collections.Iterable):
+            if not is_type is None and not isinstance(is_type, Iterable):
                 is_type = [is_type]
             is_type_names = "' or '".join(map(lambda x: str(x.__name__), is_type))
             # add for each type in is_type -> wrong, need to add this at the comparison level!
