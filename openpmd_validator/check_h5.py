@@ -855,6 +855,46 @@ def check_particles(f, iteration, v, extensionStates) :
                         dset = species[ os.path.join(record, component_name) ]
                         result_array += test_component(dset, v)
 
+            # weighting's attributes are fixed
+            if record == "weighting" and result_array[0] == 0:
+                valid, unitSI = get_attr(species[record], "unitSI")
+                if valid:
+                    if not np.isclose(unitSI, 1.0):
+                        print("Error: `unitSI` attribute of `weighting` "
+                              "record must be `1.0` in species `{0}`! "
+                              "Its value is: {1}"
+                              .format(species.name, unitSI))
+                        result_array += np.array([1, 0])
+
+                valid, weightingPower = get_attr(species[record], "weightingPower")
+                if not valid or not np.isclose(weightingPower, 1.0):
+                    print("Error: `weightingPower` attribute of `weighting` "
+                          "record must be `1.0` in species `{0}`! "
+                          "Its value is: {1}"
+                          .format(species.name, weightingPower))
+                    result_array += np.array([1, 0])
+
+                valid, macroWeighted = get_attr(species[record], "macroWeighted")
+                if not valid or not macroWeighted == 1:
+                    print("Error: `macroWeighted` attribute of `weighting` "
+                          "record must be `1` in species `{0}`! "
+                          "Its value is: {1}"
+                          .format(species.name, macroWeighted))
+                    result_array += np.array([1, 0])
+
+                valid, unitDimension = get_attr(species[record], "unitDimension")
+                if valid:
+                    valid = valid and unitDimension.shape == (7, )
+                if valid:
+                    valid = valid and \
+                            np.allclose(unitDimension, np.zeros((7, )))
+                if not valid:
+                    print("Error: `unitDimension` attribute of `weighting` "
+                          "record must be `[0, 0, 0, 0, 0, 0, 0]` in species `{0}`! "
+                          "Its value is: {1}"
+                          .format(species.name, unitDimension))
+                    result_array += np.array([1, 0])
+
     return(result_array)
 
 
