@@ -248,6 +248,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
 
         # test type
         if is_type is not None:
+            type_format_names = None
             if not type_format is None and not is_type is np.string_ and \
                not isinstance(type_format, Iterable):
                 type_format = [type_format]
@@ -525,8 +526,8 @@ def check_base_path(f, iteration, v, extensionStates):
     bp = f[base_path]
 
     # Check for the attributes of the STANDARD.md
-    result_array += test_attr(bp, v, "required", "time", [np.float32, np.float64])
-    result_array += test_attr(bp, v, "required", "dt", [np.float32, np.float64])
+    result_array += test_attr(bp, v, "required", "time", [np.float32, np.float64, np.float128])
+    result_array += test_attr(bp, v, "required", "dt", [np.float32, np.float64, np.float128])
     result_array += test_attr(bp, v, "recommended", "timeUnitSI", np.float64)
 
     return(result_array)
@@ -627,14 +628,14 @@ def check_meshes(f, iteration, v, extensionStates):
         if is_scalar_record(field) :   # If the record is a scalar field
             result_array += test_component(field, v)
             result_array += test_attr(field, v,
-                                "required", "position", np.ndarray, [np.float32, np.float64])
+                                "required", "position", np.ndarray, [np.float32, np.float64, np.float128])
         else:                          # If the record is a vector field
             # Loop over the components
             for component_name in list(field.keys()) :
                 component = field[component_name]
                 result_array += test_component(component, v)
                 result_array += test_attr(component, v,
-                                "required", "position", np.ndarray, [np.float32, np.float64])
+                                "required", "position", np.ndarray, [np.float32, np.float64, np.float128])
 
     # Check for the attributes of the PIC extension,
     # if asked to do so by the user
@@ -820,7 +821,7 @@ def check_particles(f, iteration, v, extensionStates) :
         # Check the attributes associated with the PIC extension
         if extensionStates['ED-PIC'] :
             result_array += test_attr(species, v, "required",
-                                      "particleShape", [np.float32, np.float64])
+                                      "particleShape", [np.float32, np.float64, np.float128])
             result_array += test_attr(species, v, "required",
                                       "currentDeposition", np.string_)
             result_array += test_attr(species, v, "required",
@@ -857,7 +858,7 @@ def check_particles(f, iteration, v, extensionStates) :
                 result_array += test_attr(species[record], v,
                         "required", "unitDimension", np.ndarray, np.float64)
                 result_array += test_attr(species[record], v, "required",
-                                          "timeOffset", [np.float32, np.float64])
+                                          "timeOffset", [np.float32, np.float64, np.float128])
                 if extensionStates['ED-PIC'] :
                     result_array += test_attr(species[record], v, "required",
                                               "weightingPower", np.float64)
