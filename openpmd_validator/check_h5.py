@@ -766,6 +766,9 @@ def check_particles(f, iteration, v, extensionStates) :
         for species_record_name in species :
             result_array += test_record(species, species_record_name)
 
+        # Check the id record of the particles (must be an intX type)
+        result_array += test_key(species, v, "optional", "id")
+
         # Check the position record of the particles
         result_array += test_key(species, v, "required", "position")
 
