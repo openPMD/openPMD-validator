@@ -7,7 +7,7 @@ def read_requirements():
 
 
 def read_readme():
-    with open('README.md') as f:
+    with open('./README.md', encoding='utf-8') as f:
         return f.read()
 
 
@@ -23,6 +23,7 @@ setup(
     install_requires=read_requirements(),
     description='Validator and examples for openPMD format',
     long_description=read_readme(),
+    long_description_content_type='text/markdown',
     classifiers=[
         # 'Development Status :: 4 - Beta',
         'Environment :: Console',
