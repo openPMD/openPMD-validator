@@ -7,13 +7,13 @@ def read_requirements():
 
 
 def read_readme():
-    with open('README.md') as f:
+    with open('./README.md', encoding='utf-8') as f:
         return f.read()
 
 
 setup(
     name='openPMD-validator',
-    version='1.1.0.1',
+    version='1.1.0.2',
     url='https://github.com/openPMD/openPMD-validator',
     # author=...,  # TODO
     # author_email=...,  # TODO
@@ -23,6 +23,7 @@ setup(
     install_requires=read_requirements(),
     description='Validator and examples for openPMD format',
     long_description=read_readme(),
+    long_description_content_type='text/markdown',
     classifiers=[
         # 'Development Status :: 4 - Beta',
         'Environment :: Console',
