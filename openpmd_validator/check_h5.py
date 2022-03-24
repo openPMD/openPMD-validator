@@ -366,7 +366,7 @@ def test_component(c, v) :
         result_array += test_attr(c, v, "required", "shape", np.ndarray, np.uint64)
 
     # default attributes for all components
-    result_array += test_attr(c, v, "recommended", "unitSI", np.float64)
+    result_array += test_attr(c, v, "recommended", "unitSI", np.double)
 
     return(result_array)
 
@@ -526,9 +526,9 @@ def check_base_path(f, iteration, v, extensionStates):
     bp = f[base_path]
 
     # Check for the attributes of the STANDARD.md
-    result_array += test_attr(bp, v, "required", "time", [np.float32, np.float64, np.float128])
-    result_array += test_attr(bp, v, "required", "dt", [np.float32, np.float64, np.float128])
-    result_array += test_attr(bp, v, "recommended", "timeUnitSI", np.float64)
+    result_array += test_attr(bp, v, "required", "time", [np.single, np.double, np.longdouble])
+    result_array += test_attr(bp, v, "required", "dt", [np.single, np.double, np.longdouble])
+    result_array += test_attr(bp, v, "recommended", "timeUnitSI", np.double)
 
     return(result_array)
 
@@ -599,17 +599,17 @@ def check_meshes(f, iteration, v, extensionStates):
 
         # General attributes of the record
         result_array += test_attr(field, v, "required",
-                                  "unitDimension", np.ndarray, np.float64)
+                                  "unitDimension", np.ndarray, np.double)
         result_array += test_attr(field, v, "required",
-                                  "timeOffset", [np.float32, np.float64])
+                                  "timeOffset", [np.single, np.double])
         result_array += test_attr(field, v, "required",
-                                  "gridSpacing", np.ndarray, [np.float32, np.float64])
+                                  "gridSpacing", np.ndarray, [np.single, np.double])
         result_array += test_attr(field, v, "required",
-                                  "gridGlobalOffset", np.ndarray, [np.float32, np.float64])
+                                  "gridGlobalOffset", np.ndarray, [np.single, np.double])
         result_array += test_attr(field, v, "recommended",
-                                  "gridUnitSI", np.ndarray, np.float64)
+                                  "gridUnitSI", np.ndarray, np.double)
         result_array += test_attr(field, v, "required",
-                                  "gridUnitDimension", np.ndarray, np.float64)
+                                  "gridUnitDimension", np.ndarray, np.double)
         result_array += test_attr(field, v, "required",
                                   "axisLabels", np.ndarray, np.string_)
         # Specific check for geometry
@@ -628,14 +628,14 @@ def check_meshes(f, iteration, v, extensionStates):
         if is_scalar_record(field) :   # If the record is a scalar field
             result_array += test_component(field, v)
             result_array += test_attr(field, v,
-                                "required", "position", np.ndarray, [np.float32, np.float64, np.float128])
+                                "required", "position", np.ndarray, [np.single, np.double, np.longdouble])
         else:                          # If the record is a vector field
             # Loop over the components
             for component_name in list(field.keys()) :
                 component = field[component_name]
                 result_array += test_component(component, v)
                 result_array += test_attr(component, v,
-                                "required", "position", np.ndarray, [np.float32, np.float64, np.float128])
+                                "required", "position", np.ndarray, [np.single, np.double, np.longdouble])
 
     # Check for the attributes of the PIC extension,
     # if asked to do so by the user
@@ -824,7 +824,7 @@ def check_particles(f, iteration, v, extensionStates) :
         # Check the attributes associated with the PIC extension
         if extensionStates['ED-PIC'] :
             result_array += test_attr(species, v, "required",
-                                      "particleShape", [np.float32, np.float64, np.float128])
+                                      "particleShape", [np.single, np.double, np.longdouble])
             result_array += test_attr(species, v, "required",
                                       "currentDeposition", np.string_)
             result_array += test_attr(species, v, "required",
@@ -859,12 +859,12 @@ def check_particles(f, iteration, v, extensionStates) :
             # all records (but particlePatches) require units
             if record != "particlePatches":
                 result_array += test_attr(species[record], v,
-                        "required", "unitDimension", np.ndarray, np.float64)
+                        "required", "unitDimension", np.ndarray, np.double)
                 result_array += test_attr(species[record], v, "required",
-                                          "timeOffset", [np.float32, np.float64, np.float128])
+                                          "timeOffset", [np.single, np.double, np.longdouble])
                 if extensionStates['ED-PIC'] :
                     result_array += test_attr(species[record], v, "required",
-                                              "weightingPower", np.float64)
+                                              "weightingPower", np.double)
                     result_array += test_attr(species[record], v, "required",
                                               "macroWeighted", np.uint32)
                 # Attributes of the components
