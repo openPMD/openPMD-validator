@@ -78,7 +78,7 @@ for p in $pfs; do \
   docker run --rm -it -v $PWD:/home/ -e platform=$p openpmd_validator_build; \
 done
 ```
-This builds the conda packages for Python 2.7, 3.4, 3.5 and 3.6, using a
+This builds the conda packages for Python 3.6 - 3.10, using a
 reproduceable environment.
 
 - After the build, start the container again and upload with the following commands:
