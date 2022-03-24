@@ -1,0 +1,28 @@
+name: 🍏 macOS
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.head_ref }}-macos
+  cancel-in-progress: true
+
+jobs:
+  build_macOS:
+    name: macOS
+    runs-on: macos-latest
+    if: github.event.pull_request.draft == false
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Dependencies
+      run: |
+        python3 -m pip install --upgrade pyflakes
+        python3 -m pip install --upgrade -r requirements.txt
+
+        python3 -m pyflakes openpmd_validator
+
+    - name: Test
+      run: |
+        python3 -m pip install .
+        openPMD_createExamples_h5
+        openPMD_check_h5 -i example.h5 --EDPIC
