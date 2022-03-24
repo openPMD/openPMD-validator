@@ -25,6 +25,7 @@ try:
     from collections.abc import Iterable
 except ImportError:
     from collections import Iterable
+from posixpath import join
 
 
 # version of the openPMD standard
@@ -68,6 +69,13 @@ def parse_cmd(argv):
         print("File '%s' not found!" % file_name)
         help()
     return file_name, verbose, force_extension_pic, force_extension_speciestype
+
+
+def join_path(path, other_path):
+    """ This joins openPMD internal paths.
+
+    Contrary to os.path.join, they are always forward-slashes"""
+    return join(path, other_path)
 
 
 def open_file(file_name):
@@ -573,7 +581,7 @@ def check_meshes(f, iteration, v, extensionStates):
                   "(will not search for mesh records)")
 
     if meshes_path:
-        if os.path.join( base_path, meshes_path) != ( base_path + meshes_path ):
+        if join_path( base_path, meshes_path) != ( base_path + meshes_path ):
             print("Error: `basePath`+`meshesPath` seems to be malformed "
                 "(is `basePath` absolute and ends on a `/` ?)")
             return( np.array([1, 0]) )
@@ -737,7 +745,7 @@ def check_particles(f, iteration, v, extensionStates) :
                   "(will not search for particle records)")
 
     if particles_path:
-        if os.path.join( base_path, particles_path) !=  \
+        if join_path( base_path, particles_path) !=  \
             ( base_path + particles_path ) :
             print("Error: `basePath`+`particlesPath` seems to be malformed "
                 "(is `basePath` absolute and ends on a `/` ?)")
@@ -874,7 +882,7 @@ def check_particles(f, iteration, v, extensionStates) :
                 else : # Vector record
                     # Loop over the components
                     for component_name in list(species[record].keys()):
-                        dset = species[ os.path.join(record, component_name) ]
+                        dset = species[ join_path(record, component_name) ]
                         result_array += test_component(dset, v)
 
             # weighting's attributes are fixed
