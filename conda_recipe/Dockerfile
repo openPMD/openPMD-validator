@@ -1,11 +1,11 @@
 FROM continuumio/miniconda
-MAINTAINER Axel Huebl <a.huebl@hzdr.de>
+MAINTAINER Axel Huebl <axelhuebl@lbl.gov>
 
 # Arguments that need to be passed at runtime via -e platform=linux-64
 # linux-64 osx-64 linux-ppc64le win-64
 ENV platform linux-64
 
-ENV pyvs "2.7 3.4 3.5 3.6"
+ENV pyvs "3.6 3.7 3.8 3.9 3.10"
 
 RUN conda install --yes conda conda-build anaconda-client
 
