@@ -47,7 +47,7 @@ echo "Please answer the following questions about the version number"
 echo "you want to set first:"
 echo
 
-read -p "openPMD STANDARD MAJOR version? (e.g. 1) " -r
+read -p "openPMD STANDARD MAJOR version? (e.g. 2) " -r
 MAJOR=$REPLY
 echo
 read -p "openPMD STANDARD MINOR version? (e.g. 0) " -r

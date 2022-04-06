@@ -36,7 +36,7 @@ username = <yourPypiUsername>
   validator scripts: `1.1.0.5`
 
 - Make sure that the version number in `setup.cfg`, `conda_recipe/meta.yaml`,
-  `README.md`, `checkOpenPMD*.py` **and** in `createExamples*.py` correspond to
+  `README.md`, `openpmd_validator/checkOpenPMD*.py` **and** in `openpmd_validator/createExamples*.py` correspond to
   the new release. Executing the script `newVersion.sh` will update all places
   for you.
 
