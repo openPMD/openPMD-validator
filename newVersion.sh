@@ -50,7 +50,7 @@ echo
 read -p "openPMD STANDARD MAJOR version? (e.g. 1) " -r
 MAJOR=$REPLY
 echo
-read -p "openPMD STANDARD MINOR version? (e.g. 0) " -r
+read -p "openPMD STANDARD MINOR version? (e.g. 1) " -r
 MINOR=$REPLY
 echo
 read -p "openPMD STANDARD PATCH version? (e.g. 0) " -r
