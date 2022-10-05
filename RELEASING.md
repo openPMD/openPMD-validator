@@ -54,7 +54,6 @@ username = <yourPypiUsername>
 - Upload the package to [PyPI](https://pypi.python.org/pypi):
 ```bash
 rm -rf dist
-python2 setup.py sdist bdist_wheel
 python3 setup.py sdist bdist_wheel
 twine upload -s dist/* -r pypi
 ```
