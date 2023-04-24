@@ -31,7 +31,7 @@ from posixpath import join
 # version of the openPMD standard
 openPMD = "2.0.0"
 
-ext_list = ["ED-PIC", "SpeciesType"]
+ext_list = ["BeamPhysics", "ED-PIC", "LaserEnvelope", "ParticleWeighting", "SpeciesType", "Wavefront"]
 
 def help():
     """ Print usage information for this file """
@@ -870,7 +870,7 @@ def check_particles(f, iteration, v, extensionStates) :
                         "required", "unitDimension", np.ndarray, np.double)
                 result_array += test_attr(species[record], v, "required",
                                           "timeOffset", [np.single, np.double, np.longdouble])
-                if extensionStates['ED-PIC'] :
+                if extensionStates['ED-PIC'] or extensionStates['ParticleWeighting'] :
                     result_array += test_attr(species[record], v, "required",
                                               "weightingPower", np.double)
                     result_array += test_attr(species[record], v, "required",
@@ -886,7 +886,8 @@ def check_particles(f, iteration, v, extensionStates) :
                         result_array += test_component(dset, v)
 
             # weighting's attributes are fixed
-            if record == "weighting" and result_array[0] == 0:
+            if (extensionStates['ED-PIC'] or extensionStates['ParticleWeighting']) and \
+               record == "weighting" and result_array[0] == 0 :
                 valid, unitSI = get_attr(species[record], "unitSI")
                 if valid:
                     if not np.isclose(unitSI, 1.0):
