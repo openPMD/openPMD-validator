@@ -230,9 +230,9 @@ def write_b_2d_cartesian(meshes, data_ez):
     #   the constant record components B.x and B.y have the same shape
     #   (== same mesh discretization) as the non-constant record
     #   component B.z
-    B["x"].attrs["value"] = np.float(0.0)
+    B["x"].attrs["value"] = np.float64(0.0)
     B["x"].attrs["shape"] = np.array(data_ez.shape, dtype=np.uint64)
-    B["y"].attrs["value"] = np.float(0.0)
+    B["y"].attrs["value"] = np.float64(0.0)
     B["y"].attrs["shape"] = np.array(data_ez.shape, dtype=np.uint64)
     B["z"][:,:] =  data_ez[:,:]
 
