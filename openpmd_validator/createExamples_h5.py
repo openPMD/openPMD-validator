@@ -103,7 +103,7 @@ def setup_root_attr(f):
     # Recommended attributes
     f.attrs["author"] = np.string_("Axel Huebl <a.huebl@hzdr.de>")
     f.attrs["software"] = np.string_("openPMD Example Script")
-    f.attrs["softwareVersion"] = np.string_("1.1.0.3")
+    f.attrs["softwareVersion"] = np.string_("1.1.0.4")
     f.attrs["softwareDependencies"] = get_software_dependencies()
     f.attrs["machine"] = np.string_(socket.gethostname())
     f.attrs["date"] = np.string_(
