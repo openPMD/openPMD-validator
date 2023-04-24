@@ -1,6 +1,5 @@
 # openPMD Validator Scripts
 
-[![Build Status 1.1.X](https://img.shields.io/travis/openPMD/openPMD-validator/1.1.X.svg?label=1.1.X)](https://travis-ci.com/openPMD/openPMD-validator/branches)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/openPMD-validator.svg)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
