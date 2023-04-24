@@ -865,7 +865,7 @@ def check_particles(f, iteration, v, extensionStates) :
                         result_array += test_component(dset, v)
 
             # weighting's attributes are fixed
-            if record == "weighting" and result_array[0] == 0:
+            if extensionStates['ED-PIC'] and record == "weighting" and result_array[0] == 0:
                 valid, unitSI = get_attr(species[record], "unitSI")
                 if valid:
                     if not np.isclose(unitSI, 1.0):
