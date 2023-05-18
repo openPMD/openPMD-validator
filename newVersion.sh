@@ -92,11 +92,6 @@ sed -i "s/"\
 "\(.*version='\)"$regv"\('.*\)/"\
 "\1"$VERSION_STR"\3/" \
     $REPO_DIR/setup.py
-#   conda
-sed -i 's/'\
-'\({% set version = "\)'$regv'\(".*\)/'\
-'\1'$VERSION_STR'\3/' \
-    $REPO_DIR/conda_recipe/meta.yaml
 
 # example creator scripts
 #   hdf5
