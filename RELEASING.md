@@ -27,16 +27,15 @@ username = <yourPypiUsername>
 username = <yourPypiUsername>
 ```
 
-- you should have a registered account on [Anaconda.org](https://anaconda.org/)
-
 ## Creating a release on Github
 
 - The version number of the tool is `openPMDstandardVersion.patchLevel`, e.g.
   for the `1.1.0` release of the openPMD standard and the 5th release of the
   validator scripts: `1.1.0.5`
 
-- Make sure that the version number in `setup.cfg`, `conda_recipe/meta.yaml`,
-  `README.md`, `openpmd_validator/checkOpenPMD*.py` **and** in `openpmd_validator/createExamples*.py` correspond to
+- Make sure that the version number in `setup.cfg`,
+  `README.md`, `openpmd_validator/checkOpenPMD*.py` **and** in
+  `openpmd_validator/createExamples*.py` correspond to
   the new release. Executing the script `newVersion.sh` will update all places
   for you.
 
@@ -61,32 +60,7 @@ twine upload -s dist/* -r pypi
 [test PyPI](https://testpypi.python.org/pypi) ; to do so, simply
 replace `pypi` by `pypitest` in the above set of commands)
 
-## Uploading the package to Anaconda.org
+## Uploading the package to Conda
 
-- `cd` into the folder `conda_recipe`.
-
-- Still in the folder `conda_recipe`, run
-```bash
-docker build -t openpmd_validator_build .
-
-# remove old files if present
-rm -rf linux-64 linux-ppc64le osx-64 win-64
-
-pfs="linux-64 osx-64 linux-ppc64le win-64"
-for p in $pfs; do \
-  docker run --rm -it -v $PWD:/home/ -e platform=$p openpmd_validator_build; \
-done
-```
-This builds the conda packages for Python 3.6 - 3.10, using a
-reproduceable environment.
-
-- After the build, start the container again and upload with the following commands:
-```bash
-docker run -it -v $PWD:/home/ openpmd_validator_build /bin/bash
-
-anaconda login
-anaconda upload /home/osx-64/*
-anaconda upload /home/linux-64/*
-anaconda upload /home/linux-ppc64le/*
-anaconda upload /home/win-64/*
-```
+Once a new version is tagged and released on GitHub, an automatic bot will open a new pull request to [update the conda package on conda-forge](https://github.com/conda-forge/openpmd-validator-feedstock).
+Review and merge that pull request to release an updated package.
