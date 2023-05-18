@@ -35,7 +35,8 @@ the openPMD standard.
 
 [![pypi version](https://img.shields.io/pypi/v/openPMD-validator.svg)](https://pypi.python.org/pypi/openPMD-validator)
 [![Spack Package](https://img.shields.io/badge/spack-py--openpmd--validator-blue.svg)](https://spack.io)
-[![Conda Package](https://anaconda.org/ax3l/openpmd_validator/badges/version.svg)](https://anaconda.org/ax3l/openpmd_validator)
+[![Conda Package](https://img.shields.io/badge/conda.io-openpmd--validator-brightgreen)](https://anaconda.org/conda-forge/openpmd-validator)
+
 
 Choose *one* of the install methods below to get started:
 
@@ -56,7 +57,7 @@ spack load --dependencies py-openpmd-validator@2.0.0.0 ^py-h5py~mpi
 ### Conda
 
 ```bash
-conda install -c ax3l openpmd_validator==2.0.0.0
+conda install -c conda-forge openpmd-validator
 ```
 
 ### From Source
