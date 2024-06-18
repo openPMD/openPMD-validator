@@ -120,7 +120,7 @@ def get_extensions(f, v):
                     print("Info: Found extension '%s'." % extension)
         # Mask out the extension bits we have already detected so only
         # unknown ones are left
-        excessIDs = extensionIDs & ~enabledExtMask
+        excessIDs = int(extensionIDs) & ~enabledExtMask
         if excessIDs:
             print("Warning: Unknown extension Mask left: %s" % excessIDs)
     return result
