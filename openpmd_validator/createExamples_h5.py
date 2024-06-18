@@ -37,8 +37,8 @@ def get_basePath(f, iteration):
     -------
     A string with a in-file path.
     """
-    iteration_str = np.string_(str(iteration))
-    return np.string_(f.attrs["basePath"]).replace(b"%T", iteration_str)
+    iteration_str = np.bytes_(str(iteration))
+    return np.bytes_(f.attrs["basePath"]).replace(b"%T", iteration_str)
 
 def setup_base_path(f, iteration):
     """
@@ -67,7 +67,7 @@ def get_software_dependencies():
     Returns the software dependencies of this script as a semicolon
     separated string.
     """
-    return np.string_(
+    return np.bytes_(
         "python@{0}.{1}.{2};".format(
             sys.version_info.major,
             sys.version_info.minor,
@@ -92,25 +92,25 @@ def setup_root_attr(f):
     ext_list = [["ED-PIC", np.uint32(1)]]
 
     # Required attributes
-    f.attrs["openPMD"] = np.string_("1.1.0")
+    f.attrs["openPMD"] = np.bytes_("1.1.0")
     f.attrs["openPMDextension"] = ext_list[0][1] # ED-PIC extension is used
-    f.attrs["basePath"] = np.string_("/data/%T/")
-    f.attrs["meshesPath"] = np.string_("meshes/")
-    f.attrs["particlesPath"] = np.string_("particles/")
-    f.attrs["iterationEncoding"] = np.string_("groupBased")
-    f.attrs["iterationFormat"] = np.string_("/data/%T/")
+    f.attrs["basePath"] = np.bytes_("/data/%T/")
+    f.attrs["meshesPath"] = np.bytes_("meshes/")
+    f.attrs["particlesPath"] = np.bytes_("particles/")
+    f.attrs["iterationEncoding"] = np.bytes_("groupBased")
+    f.attrs["iterationFormat"] = np.bytes_("/data/%T/")
 
     # Recommended attributes
-    f.attrs["author"] = np.string_("Axel Huebl <a.huebl@hzdr.de>")
-    f.attrs["software"] = np.string_("openPMD Example Script")
-    f.attrs["softwareVersion"] = np.string_("1.1.0.4")
+    f.attrs["author"] = np.bytes_("Axel Huebl <a.huebl@hzdr.de>")
+    f.attrs["software"] = np.bytes_("openPMD Example Script")
+    f.attrs["softwareVersion"] = np.bytes_("1.1.0.4")
     f.attrs["softwareDependencies"] = get_software_dependencies()
-    f.attrs["machine"] = np.string_(socket.gethostname())
-    f.attrs["date"] = np.string_(
+    f.attrs["machine"] = np.bytes_(socket.gethostname())
+    f.attrs["date"] = np.bytes_(
         datetime.datetime.now(tzlocal()).strftime('%Y-%m-%d %H:%M:%S %z'))
 
     # Optional
-    f.attrs["comment"] = np.string_("This is a dummy file for test purposes.")
+    f.attrs["comment"] = np.bytes_("This is a dummy file for test purposes.")
 
 
 def write_rho_cylindrical(meshes, mode0, mode1):
@@ -133,17 +133,17 @@ def write_rho_cylindrical(meshes, mode0, mode1):
         (The first axis corresponds to r, and the second axis corresponds to z)
     """
     # Path to the rho meshes, within the h5py file
-    full_rho_path = np.string_("rho")
+    full_rho_path = np.bytes_("rho")
     meshes.create_dataset( full_rho_path, (3, mode0.shape[0], mode0.shape[1]), \
                            dtype=np.float32)
     rho = meshes[full_rho_path]
-    rho.attrs["comment"] = np.string_(
+    rho.attrs["comment"] = np.bytes_(
         "Density of electrons in azimuthal decomposition")
 
     # Create the dataset (cylindrical with azimuthal modes up to m=1)
     # The first axis has size 2m+1
-    rho.attrs["geometry"] = np.string_("thetaMode")
-    rho.attrs["geometryParameters"] = np.string_("m=1; imag=+")
+    rho.attrs["geometry"] = np.bytes_("thetaMode")
+    rho.attrs["geometryParameters"] = np.bytes_("m=1; imag=+")
 
     # Add information on the units of the data
     rho.attrs["unitSI"] = np.float64(1.0)
@@ -160,7 +160,7 @@ def write_rho_cylindrical(meshes, mode0, mode1):
     rho.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32) 
     rho.attrs["position"] = np.array([0.0, 0.0], dtype=np.float32)
     rho.attrs["gridUnitSI"] = np.float64(1.0)
-    rho.attrs["dataOrder"] = np.string_("C")
+    rho.attrs["dataOrder"] = np.bytes_("C")
     rho.attrs["axisLabels"] = np.array([b"r",b"z"])
     
     # Add specific information for PIC simulations
@@ -199,11 +199,11 @@ def write_b_2d_cartesian(meshes, data_ez):
     B.create_dataset(b"z", data_ez.shape, dtype=np.float32)
 
     # Write the common metadata for the group
-    B.attrs["geometry"] = np.string_("cartesian")
+    B.attrs["geometry"] = np.bytes_("cartesian")
     B.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)   # dx, dy
     B.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)  
     B.attrs["gridUnitSI"] = np.float64(1.0)
-    B.attrs["dataOrder"] = np.string_("C")
+    B.attrs["dataOrder"] = np.bytes_("C")
     B.attrs["axisLabels"] = np.array([b"x",b"y"])
     B.attrs["unitDimension"] = \
        np.array([0.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
@@ -261,11 +261,11 @@ def write_e_2d_cartesian(meshes, data_ex, data_ey, data_ez ):
     E.create_dataset(b"z", data_ez.shape, dtype=np.float32)
 
     # Write the common metadata for the group
-    E.attrs["geometry"] = np.string_("cartesian")
+    E.attrs["geometry"] = np.bytes_("cartesian")
     E.attrs["gridSpacing"] = np.array([1.0, 1.0], dtype=np.float32)  # dx, dy
     E.attrs["gridGlobalOffset"] = np.array([0.0, 0.0], dtype=np.float32)  
     E.attrs["gridUnitSI"] = np.float64(1.0)
-    E.attrs["dataOrder"] = np.string_("C")
+    E.attrs["dataOrder"] = np.bytes_("C")
     E.attrs["axisLabels"] = np.array([b"x",b"y"])
     E.attrs["unitDimension"] = \
        np.array([1.0, 1.0, -3.0, -1.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
@@ -307,9 +307,9 @@ def add_EDPIC_attr_meshes(field):
             and Dataset for scalar meshes)
 
     """
-    field.attrs["fieldSmoothing"] = np.string_("none")
+    field.attrs["fieldSmoothing"] = np.bytes_("none")
     # field.attrs["fieldSmoothingParameters"] = \
-    #     np.string_("period=10;numPasses=4;compensator=true")
+    #     np.bytes_("period=10;numPasses=4;compensator=true")
 
 
 def add_EDPIC_attr_particles(particle):
@@ -324,13 +324,13 @@ def add_EDPIC_attr_particles(particle):
 
     """
     particle.attrs["particleShape"] = 3.0
-    particle.attrs["currentDeposition"] = np.string_("Esirkepov")
-    # particle.attrs["currentDepositionParameters"] = np.string_("")
-    particle.attrs["particlePush"] = np.string_("Boris")
-    particle.attrs["particleInterpolation"] = np.string_("uniform")
-    particle.attrs["particleSmoothing"] = np.string_("none")
+    particle.attrs["currentDeposition"] = np.bytes_("Esirkepov")
+    # particle.attrs["currentDepositionParameters"] = np.bytes_("")
+    particle.attrs["particlePush"] = np.bytes_("Boris")
+    particle.attrs["particleInterpolation"] = np.bytes_("uniform")
+    particle.attrs["particleSmoothing"] = np.bytes_("none")
     # particle.attrs["particleSmoothingParameters"] = \
-    #     np.string_("period=1;numPasses=2;compensator=false")
+    #     np.bytes_("period=1;numPasses=2;compensator=false")
 
 
 def write_meshes(f, iteration):
@@ -339,15 +339,15 @@ def write_meshes(f, iteration):
     meshes = f[full_meshes_path]
 
     # Extension: Additional attributes for ED-PIC
-    meshes.attrs["fieldSolver"] = np.string_("Yee")
+    meshes.attrs["fieldSolver"] = np.bytes_("Yee")
     meshes.attrs["fieldBoundary"] = np.array(
         [b"periodic", b"periodic", b"open", b"open"])
     meshes.attrs["particleBoundary"] = np.array(
         [b"periodic", b"periodic", b"absorbing", b"absorbing"])
-    meshes.attrs["currentSmoothing"] = np.string_("Binomial")
+    meshes.attrs["currentSmoothing"] = np.bytes_("Binomial")
     meshes.attrs["currentSmoothingParameters"] = \
-         np.string_("period=1;numPasses=2;compensator=false")
-    meshes.attrs["chargeCorrection"] = np.string_("none")
+         np.bytes_("period=1;numPasses=2;compensator=false")
+    meshes.attrs["chargeCorrection"] = np.bytes_("none")
 
     # (Here the data is randomly generated, but in an actual simulation,
     # this would be replaced by the simulation data.)
@@ -375,7 +375,7 @@ def write_particles(f, iteration):
 
     globalNumParticles = 128 # example number of all particles
 
-    electrons.attrs["comment"] = np.string_("My first electron species")
+    electrons.attrs["comment"] = np.bytes_("My first electron species")
 
     # Extension: ED-PIC Attributes
     #   required

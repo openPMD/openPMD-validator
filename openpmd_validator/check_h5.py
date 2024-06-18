@@ -239,7 +239,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
 
     type_format: (numpy or python) data type
         Used with is_type to specify numpy ndarray dtypes or a
-        base np.string_ format regex. Can be a list of data types
+        base np.bytes_ format regex. Can be a list of data types
         for ndarrays where at least one data type must match.
     
     Returns
@@ -257,7 +257,7 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
         # test type
         if is_type is not None:
             type_format_names = None
-            if not type_format is None and not is_type is np.string_ and \
+            if not type_format is None and not is_type is np.bytes_ and \
                not isinstance(type_format, Iterable):
                 type_format = [type_format]
                 type_format_names = map(lambda x: x.__name__, type_format)
@@ -266,8 +266,8 @@ def test_attr(f, v, request, name, is_type=None, type_format=None):
             is_type_names = "' or '".join(map(lambda x: str(x.__name__), is_type))
             # add for each type in is_type -> wrong, need to add this at the comparison level!
             if type(value) in is_type:
-                # np.string_ format or general ndarray dtype text
-                if type(value) is np.string_ and type_format is not None:
+                # np.bytes_ format or general ndarray dtype text
+                if type(value) is np.bytes_ and type_format is not None:
                     regEx = re.compile(type_format) # Python3 only: re.ASCII
                     if regEx.match(value.decode()) :
                         result_array = np.array([0,0])
@@ -404,15 +404,15 @@ def check_root_attr(f, v):
     
     # STANDARD.md
     #   required
-    result_array += test_attr(f, v, "required", "openPMD", np.string_, "^[0-9]+\.[0-9]+\.[0-9]+$")
+    result_array += test_attr(f, v, "required", "openPMD", np.bytes_, "^[0-9]+\.[0-9]+\.[0-9]+$")
     result_array += test_attr(f, v, "required", "openPMDextension", np.uint32)
-    result_array += test_attr(f, v, "required", "basePath", np.string_, "^\/data\/\%T\/$")
-    result_array += test_attr(f, v, "required", "iterationEncoding", np.string_, "^groupBased|fileBased$")
-    result_array += test_attr(f, v, "required", "iterationFormat", np.string_)
+    result_array += test_attr(f, v, "required", "basePath", np.bytes_, "^\/data\/\%T\/$")
+    result_array += test_attr(f, v, "required", "iterationEncoding", np.bytes_, "^groupBased|fileBased$")
+    result_array += test_attr(f, v, "required", "iterationFormat", np.bytes_)
 
     #   optional but required for data
-    result_array += test_attr(f, v, "optional", "meshesPath", np.string_, "^.*\/$")
-    result_array += test_attr(f, v, "optional", "particlesPath", np.string_, "^.*\/$")
+    result_array += test_attr(f, v, "optional", "meshesPath", np.bytes_, "^.*\/$")
+    result_array += test_attr(f, v, "optional", "particlesPath", np.bytes_, "^.*\/$")
 
     # groupBased iteration encoding needs to match basePath
     if result_array[0] == 0 :
@@ -423,17 +423,17 @@ def check_root_attr(f, v):
                 result_array += np.array([1,0])
 
     #   recommended
-    result_array += test_attr(f, v, "recommended", "author", np.string_)
-    result_array += test_attr(f, v, "recommended", "software", np.string_)
+    result_array += test_attr(f, v, "recommended", "author", np.bytes_)
+    result_array += test_attr(f, v, "recommended", "software", np.bytes_)
     result_array += test_attr(f, v, "recommended",
-                              "softwareVersion", np.string_)
-    result_array += test_attr(f, v, "recommended", "date", np.string_,
+                              "softwareVersion", np.bytes_)
+    result_array += test_attr(f, v, "recommended", "date", np.bytes_,
       "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [\+|-][0-9]{4}$")
 
     #   optional
-    result_array += test_attr(f, v, "optional", "softwareDependencies", np.string_)
-    result_array += test_attr(f, v, "optional", "machine", np.string_)
-    result_array += test_attr(f, v, "optional", "comment", np.string_)
+    result_array += test_attr(f, v, "optional", "softwareDependencies", np.bytes_)
+    result_array += test_attr(f, v, "optional", "machine", np.bytes_)
+    result_array += test_attr(f, v, "optional", "comment", np.bytes_)
 
     return(result_array)
 
@@ -614,20 +614,20 @@ def check_meshes(f, iteration, v, extensionStates):
         result_array += test_attr(field, v, "required",
                                   "gridUnitSI", np.float64)
         result_array += test_attr(field, v, "required",
-                                  "dataOrder", np.string_)
+                                  "dataOrder", np.bytes_)
         result_array += test_attr(field, v, "required",
-                                  "axisLabels", np.ndarray, np.string_)
+                                  "axisLabels", np.ndarray, np.bytes_)
         # Specific check for geometry
-        geometry_test = test_attr(field, v, "required", "geometry", np.string_)
+        geometry_test = test_attr(field, v, "required", "geometry", np.bytes_)
         result_array += geometry_test
         # geometryParameters is required when using thetaMode
         if geometry_test[0] == 0 and field.attrs["geometry"] == b"thetaMode" :
             result_array += test_attr(field, v, "required",
-                                            "geometryParameters", np.string_)
+                                            "geometryParameters", np.bytes_)
         # otherwise it is optional
         else :
             result_array += test_attr(field, v, "optional",
-                                            "geometryParameters", np.string_)
+                                            "geometryParameters", np.bytes_)
          
         # Attributes of the record's components
         if is_scalar_record(field) :   # If the record is a scalar field
@@ -647,53 +647,53 @@ def check_meshes(f, iteration, v, extensionStates):
     if extensionStates['ED-PIC'] and len(list_meshes) > 0:
         # Check the attributes associated with the field solver
         result_array += test_attr(f[full_meshes_path], v, "required",
-                                  "fieldSolver", np.string_)
+                                  "fieldSolver", np.bytes_)
         valid, field_solver = get_attr(f[full_meshes_path], "fieldSolver")
         if (valid == True) and (field_solver in ["other", "GPSTD"]) :
             result_array += test_attr(f[full_meshes_path], v, "required",
-                                      "fieldSolverParameters", np.string_)
+                                      "fieldSolverParameters", np.bytes_)
 
         # Check for the attributes associated with the field boundaries
         result_array += test_attr(f[full_meshes_path], v, "required",
-                                "fieldBoundary", np.ndarray, np.string_)
+                                "fieldBoundary", np.ndarray, np.bytes_)
         valid, field_boundary = get_attr(f[full_meshes_path], "fieldBoundary")
         if (valid == True) and (np.any(field_boundary == b"other")) :
             result_array += test_attr(f[full_meshes_path], v, "required",
-                        "fieldBoundaryParameters", np.ndarray, np.string_)
+                        "fieldBoundaryParameters", np.ndarray, np.bytes_)
 
         # Check for the attributes associated with the field boundaries
         result_array += test_attr(f[full_meshes_path], v, "required",
-                                "particleBoundary", np.ndarray, np.string_)
+                                "particleBoundary", np.ndarray, np.bytes_)
         valid, particle_boundary = get_attr(f[full_meshes_path], "particleBoundary")
         if (valid == True) and (np.any(particle_boundary == b"other")) :
             result_array += test_attr(f[full_meshes_path], v, "required",
-                    "particleBoundaryParameters", np.ndarray, np.string_)
+                    "particleBoundaryParameters", np.ndarray, np.bytes_)
 
         # Check the attributes associated with the current smoothing
         result_array += test_attr(f[full_meshes_path], v, "required",
-                                  "currentSmoothing", np.string_)
+                                  "currentSmoothing", np.bytes_)
         valid, current_smoothing = get_attr(f[full_meshes_path], "currentSmoothing")
         if (valid == True) and (current_smoothing != b"none") :
             result_array += test_attr(f[full_meshes_path], v, "required",
-                        "currentSmoothingParameters", np.string_)
+                        "currentSmoothingParameters", np.bytes_)
     
         # Check the attributes associated with the charge conservation
         result_array += test_attr(f[full_meshes_path], v, "required",
-                                  "chargeCorrection", np.string_)
+                                  "chargeCorrection", np.bytes_)
         valid, charge_correction = get_attr(f[full_meshes_path], "chargeCorrection")
         if valid == True and charge_correction != b"none":
             result_array += test_attr(f[full_meshes_path], v, "required",
-                        "chargeCorrectionParameters", np.string_)
+                        "chargeCorrectionParameters", np.bytes_)
 
         # Check for the attributes of each record
         for field_name in list_meshes :
             field = f[full_meshes_path + field_name.encode('ascii')]
             result_array + test_attr(field, v, "required",
-                                     "fieldSmoothing", np.string_)
+                                     "fieldSmoothing", np.bytes_)
             valid, field_smoothing = get_attr(field, "fieldSmoothing")
             if (valid == True) and (field_smoothing != b"none") :
                 result_array += test_attr(field,v, "required",
-                                    "fieldSmoothingParameters", np.string_)
+                                    "fieldSmoothingParameters", np.bytes_)
     return(result_array)
 
 
@@ -827,19 +827,19 @@ def check_particles(f, iteration, v, extensionStates) :
             result_array += test_attr(species, v, "required",
                                       "particleShape", [np.single, np.double, np.longdouble])
             result_array += test_attr(species, v, "required",
-                                      "currentDeposition", np.string_)
+                                      "currentDeposition", np.bytes_)
             result_array += test_attr(species, v, "required",
-                                      "particlePush", np.string_)
+                                      "particlePush", np.bytes_)
             result_array += test_attr(species, v, "required",
-                                      "particleInterpolation", np.string_)
+                                      "particleInterpolation", np.bytes_)
 
             # Check for the attributes associated with the particle smoothing
             result_array += test_attr(species, v, "required",
-                                      "particleSmoothing", np.string_)
+                                      "particleSmoothing", np.bytes_)
             valid, particle_smoothing = get_attr(species, "particleSmoothing")
             if valid == True and particle_smoothing != b"none":
                 result_array += test_attr(species, v, "required",
-                                "particleSmoothingParameters", np.string_)
+                                "particleSmoothingParameters", np.bytes_)
 
         # Check attributes of each record of the particle
         for record in list(species.keys()) :
