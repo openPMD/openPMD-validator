@@ -535,6 +535,14 @@ def write_particles(f, iteration):
     particlePatches["extent/y"].attrs["unitSI"] = offset["y"].attrs["unitSI"]
     particlePatches["extent/z"].attrs["unitSI"] = offset["z"].attrs["unitSI"]
 
+    # particle patches are spatial bounding boxes
+    particlePatches["offset"].attrs["unitDimension"] = \
+       np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
+    particlePatches["extent"].attrs["unitDimension"] = \
+       np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
+       #          L    M     T    I  theta  N    J
+       # Dimension of Length per component
+
     # domain decomposition shall be 1D along x (but positions are still 3D)
     # we can therefor make the other components constant
     particlePatches["offset/y"].attrs["value"] = np.float32(0.0)   # full size
@@ -559,6 +567,12 @@ def write_particles(f, iteration):
         # 1st dimension spatial offset
         particlePatches['offset/x'][rank] = rank * grid_layout[0] / mpi_size
         particlePatches['extent/x'][rank] = grid_layout[0] / mpi_size
+
+        # unitless indices & counters
+        particlePatches["numParticles"].attrs["unitDimension"] = \
+            np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
+        particlePatches["numParticlesOffset"].attrs["unitDimension"] = \
+            np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ], dtype=np.float64)
 
 
 def main():
