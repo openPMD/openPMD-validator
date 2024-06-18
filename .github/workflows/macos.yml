@@ -12,10 +12,13 @@ jobs:
     runs-on: macos-latest
     if: github.event.pull_request.draft == false
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Dependencies
       run: |
+        python3 -m venv py-venv
+        source py-venv/bin/activate
+
         python3 -m pip install --upgrade pyflakes
         python3 -m pip install --upgrade -r requirements.txt
 
@@ -23,6 +26,8 @@ jobs:
 
     - name: Test
       run: |
+        source py-venv/bin/activate
+
         python3 -m pip install .
         openPMD_createExamples_h5
         openPMD_check_h5 -i example.h5 --EDPIC
