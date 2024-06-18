@@ -43,14 +43,14 @@ Choose *one* of the install methods below to get started:
 
 ```bash
 # optional: append --user
-pip install openPMD-validator==1.1.0.4
+pip install openPMD-validator==1.1.0.5
 ```
 
 ### Spack
 
 ```bash
-spack install py-openpmd-validator@1.1.0.4 ^py-h5py~mpi
-spack load --dependencies py-openpmd-validator@1.1.0.4 ^py-h5py~mpi
+spack install py-openpmd-validator@1.1.0.5 ^py-h5py~mpi
+spack load --dependencies py-openpmd-validator@1.1.0.5 ^py-h5py~mpi
 ```
 
 ### Conda
@@ -62,9 +62,9 @@ conda install -c conda-forge openpmd-validator
 ### From Source
 
 ```bash
-wget https://github.com/openPMD/openPMD-validator/archive/1.1.0.4.tar.gz
-tar -xf 1.1.0.4.tar.gz
-cd openPMD-validator-1.1.0.4/
+wget https://github.com/openPMD/openPMD-validator/archive/1.1.0.5.tar.gz
+tar -xf 1.1.0.5.tar.gz
+cd openPMD-validator-1.1.0.5/
 
 # optional: append --user
 python setup.py install
